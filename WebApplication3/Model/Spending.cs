@@ -1,0 +1,33 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+
+namespace WebApplication3.Model
+{
+    public class Spending
+    {
+        public Spending(SubUser subUser, string product, string productCategory, int price, DateTime date)
+        {
+
+            this.subUser = subUser;
+            this.product = product;     
+            this.productCategory = productCategory; 
+            this.price = price; 
+            this.date = date;   
+        }
+
+        public Spending() { }
+
+        [Key]
+        public int Id { get; set; }
+        public SubUser subUser { get; set; }
+
+        public string product  { get; set; }
+        public string productCategory { get; set; }
+        public int price { get; set; }
+
+        public DateTime date { get; set; }
+    }
+
+}
