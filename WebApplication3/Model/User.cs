@@ -7,12 +7,13 @@ namespace WebApplication3.Model
 {
     public class User
     {
-        public User(string email, string password, bool verified)
+        public User(string email, string salt, string password, bool verified)
         {
 
             this.email = email;
-            this.password = password;
+            this.passwordHash = password;
             this.verified = verified;
+            this.salt = salt;
         }
 
         public User() { }
@@ -20,7 +21,8 @@ namespace WebApplication3.Model
         [Key]
         public string email { get; set; }
 
-        public string password { get; set; }
+        public string salt { get; set; }
+        public string passwordHash { get; set; }
         public bool verified { get; set; }
 
         public IList<SubUser> SubUsers { get; } = new List<SubUser>();

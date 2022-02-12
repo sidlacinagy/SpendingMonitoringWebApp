@@ -19,7 +19,7 @@ namespace WebApplication3.Model
 
         public PwRecoveryToken() { }
 
-
+ 
         public User user { get; set; }
 
         [Key]

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication3.Model
 {
@@ -26,7 +27,7 @@ namespace WebApplication3.Model
             public string subUserName { get; set; }
 
 
-            public User User { get; set; }
+        public User User { get; set; }
 
             public IList<Spending> Spendings { get; } = new List<Spending>();
     }

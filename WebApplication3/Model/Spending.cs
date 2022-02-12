@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication3.Model
 {
@@ -21,6 +21,8 @@ namespace WebApplication3.Model
 
         [Key]
         public int Id { get; set; }
+
+
         public SubUser subUser { get; set; }
 
         public string product  { get; set; }
