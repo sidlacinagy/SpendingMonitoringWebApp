@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using WebApplication3.Model;
 using WebApplication3.Services;
@@ -10,24 +14,26 @@ namespace WebApplication3.Controllers
 
     [Route("api/user")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : Controller
     {
         
 
         private readonly UserService _userService;
         private readonly TokenService _tokenService;
+        private IConfiguration _config;    
 
 
-        public UserController(SpendingAppDbContext context)
+        public UserController(SpendingAppDbContext context,IConfiguration configuration)
         {
          
             _userService = new UserService(context);
             _tokenService = new TokenService(context);
+            _config = configuration;
 
         }
 
 
-        
+        [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register()
         {
@@ -45,7 +51,7 @@ namespace WebApplication3.Controllers
             }
             
         }
-        
+        [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult Login()
         {
@@ -55,7 +61,7 @@ namespace WebApplication3.Controllers
             {
                 if (_userService.LogInUser(email, password))
                 {
-                    return StatusCode(200, "Success");
+                    return StatusCode(200, GenerateJSONWebToken(email));
                 }
                 return StatusCode(400, "Unsuccessful login");
             }
@@ -65,7 +71,7 @@ namespace WebApplication3.Controllers
             }
 
         }
-
+        [AllowAnonymous]
         [HttpPost("getResetToken")]
         public IActionResult PasswordReset()
         {
@@ -82,7 +88,7 @@ namespace WebApplication3.Controllers
             }
 
         }
-
+        [AllowAnonymous]
         [HttpPost("resetPassword")]
         public IActionResult Reset()
         {
@@ -100,7 +106,7 @@ namespace WebApplication3.Controllers
             }
 
         }
-
+        [AllowAnonymous]
         [HttpPost("verify")]
         public IActionResult Verify()
         {
@@ -115,6 +121,34 @@ namespace WebApplication3.Controllers
             {
                 return StatusCode(400, e.Message);
             }
+        }
+
+
+        private string GenerateJSONWebToken(String email)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var claims = new Claim[]
+            {
+                new Claim("email", email)
+            };
+            var token = new JwtSecurityToken(
+              issuer: _config["Jwt:Issuer"],
+              audience: _config["Jwt:Issuer"],
+              claims: claims,
+              expires: DateTime.Now.AddMinutes(120),
+              signingCredentials: credentials);
+                
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        
+        [HttpGet("getToken")]
+        [Authorize(Policy = "email")]
+        public string TestAuth()
+        {
+            var email = User.FindFirst("email")?.Value;
+            return email;
         }
 
 

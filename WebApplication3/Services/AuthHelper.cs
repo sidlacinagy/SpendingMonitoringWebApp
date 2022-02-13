@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Configuration;
+using System.Security.Cryptography;
 
 namespace WebApplication3.Services
 {
@@ -22,5 +23,7 @@ namespace WebApplication3.Services
                 return Convert.ToBase64String(rfc2898DeriveBytes.GetBytes(nHash));
             }
         }
+
+        
     }
 }
