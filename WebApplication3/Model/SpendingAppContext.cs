@@ -23,5 +23,7 @@ namespace WebApplication3.Model
 
         public DbSet<Spending> Spending { get; set; }
 
+       
+
     }
 }

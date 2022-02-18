@@ -148,7 +148,7 @@ namespace WebApplication3.Controllers
         public string TestAuth()
         {
             var email = User.FindFirst("email")?.Value;
-            return email;
+            return email+"asdada";
         }
 
 

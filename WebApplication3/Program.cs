@@ -47,7 +47,7 @@ class Test {
 
         builder.Services.AddAuthorization(options =>
         {
-            options.AddPolicy("email", policy => policy.RequireClaim("email"));
+            options.AddPolicy("email", policy => { policy.RequireClaim("email");});
         });
 
         builder.Services.AddDbContext<SpendingAppDbContext>(options => options.UseSqlServer("Server = localhost\\SQLEXPRESS; Database = SpendingApp; Trusted_Connection = True;"));

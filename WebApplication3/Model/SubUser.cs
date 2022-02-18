@@ -22,9 +22,9 @@ namespace WebApplication3.Model
             [Key]
             public int subuserId { get; set; }
 
-           
-            
-            public string subUserName { get; set; }
+
+  
+        public string subUserName { get; set; }
 
 
         public User User { get; set; }
