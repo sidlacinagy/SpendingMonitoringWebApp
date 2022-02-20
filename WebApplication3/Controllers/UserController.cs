@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using WebApplication3.Model;
 using WebApplication3.Services;
 
@@ -20,6 +21,7 @@ namespace WebApplication3.Controllers
 
         private readonly UserService _userService;
         private readonly TokenService _tokenService;
+        private readonly SubUserService _subUserService;
         private IConfiguration _config;    
 
 
@@ -28,6 +30,7 @@ namespace WebApplication3.Controllers
          
             _userService = new UserService(context);
             _tokenService = new TokenService(context);
+            _subUserService = new SubUserService(context);
             _config = configuration;
 
         }
@@ -42,7 +45,7 @@ namespace WebApplication3.Controllers
             try
             {
                 _userService.RegisterUser(email, password);
-                _tokenService.CreateAccountVerificationToken(email);
+                String token=_tokenService.CreateAccountVerificationToken(email);
                 //send email
                 return StatusCode(200, "Success");
             }
@@ -78,7 +81,7 @@ namespace WebApplication3.Controllers
             String email = HttpContext.Request.Form["email"];
             try
             {
-                _tokenService.CreatePwRecoveryToken(email);
+                String token=_tokenService.CreatePwRecoveryToken(email);
                 //send email
                 return StatusCode(200, "Success");
             }
@@ -128,9 +131,11 @@ namespace WebApplication3.Controllers
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            string jsonString = JsonSerializer.Serialize(_subUserService.GetSubUsersByID(email));
             var claims = new Claim[]
             {
-                new Claim("email", email)
+                new Claim("email", email),
+                new Claim("subusers",jsonString)
             };
             var token = new JwtSecurityToken(
               issuer: _config["Jwt:Issuer"],
@@ -145,10 +150,12 @@ namespace WebApplication3.Controllers
         
         [HttpGet("getToken")]
         [Authorize(Policy = "email")]
-        public string TestAuth()
+        public int TestAuth()
         {
             var email = User.FindFirst("email")?.Value;
-            return email+"asdada";
+            var subusers = User.FindFirst("subusers")?.Value;
+            var asd=JsonSerializer.Deserialize<int[]>(subusers);
+            return asd[0];
         }
 
 

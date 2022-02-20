@@ -14,7 +14,7 @@ namespace WebApplication3.Services
 
         }
 
-        public void CreatePwRecoveryToken(string email)
+        public String CreatePwRecoveryToken(string email)
         {
             Guid uuid = Guid.NewGuid();
             string uuidAsString = uuid.ToString();
@@ -27,9 +27,10 @@ namespace WebApplication3.Services
             PwRecoveryToken pwRecoveryToken = new PwRecoveryToken(user, uuidAsString, expirationDate);
             _dbContext.Add<PwRecoveryToken>(pwRecoveryToken);
             _dbContext.SaveChanges();
+            return uuidAsString;
         }
 
-        public void CreateAccountVerificationToken(string email)
+        public String CreateAccountVerificationToken(string email)
         {
             Guid uuid = Guid.NewGuid();
             string uuidAsString = uuid.ToString();
@@ -42,6 +43,7 @@ namespace WebApplication3.Services
             AccountVerificationToken accountVerificationToken = new AccountVerificationToken(user, uuidAsString, expirationDate);
             _dbContext.Add<AccountVerificationToken>(accountVerificationToken);
             _dbContext.SaveChanges();
+            return uuidAsString;
         }
 
         public String GetEmailByVerificationToken(string token)

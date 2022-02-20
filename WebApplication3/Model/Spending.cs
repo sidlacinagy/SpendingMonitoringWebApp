@@ -14,13 +14,16 @@ namespace WebApplication3.Model
             this.product = product;     
             this.productCategory = productCategory; 
             this.price = price; 
-            this.date = date;   
+            this.date = date;
+            Guid uuid = Guid.NewGuid();
+            string uuidAsString = uuid.ToString();
+            this.Id = uuidAsString;
         }
 
         public Spending() { }
 
         [Key]
-        public int Id { get; set; }
+        public String Id { get; set; }
 
 
         public SubUser subUser { get; set; }
@@ -30,6 +33,8 @@ namespace WebApplication3.Model
         public int price { get; set; }
 
         public DateTime date { get; set; }
+
+
     }
 
 }

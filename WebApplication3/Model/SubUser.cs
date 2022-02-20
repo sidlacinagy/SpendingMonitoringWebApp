@@ -5,31 +5,34 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication3.Model
 {
-   
 
-        public class SubUser
+
+    public class SubUser
+    {
+        public SubUser(User user, string subUserName)
         {
-            public SubUser(User user,string subUserName)
-            {
 
-                this.subUserName = subUserName;
-                this.User = user;
-            }
+            this.subUserName = subUserName;
+            this.User = user;
+            Guid uuid = Guid.NewGuid();
+            string uuidAsString = uuid.ToString();
+            this.subUserId = uuidAsString;
+        }
 
         public SubUser() { }
 
-       
-            [Key]
-            public int subuserId { get; set; }
+
+        [Key]
+        public String subUserId { get; set; }
 
 
-  
+
         public string subUserName { get; set; }
 
 
         public User User { get; set; }
 
-            public IList<Spending> Spendings { get; } = new List<Spending>();
+        public IList<Spending> Spendings { get; } = new List<Spending>();
     }
 
 

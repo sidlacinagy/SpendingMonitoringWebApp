@@ -82,23 +82,20 @@ namespace WebApplication3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("subuserId")
-                        .HasColumnType("int");
+                    b.Property<string>("subUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("subuserId");
+                    b.HasIndex("subUserId");
 
                     b.ToTable("Spending");
                 });
 
             modelBuilder.Entity("WebApplication3.Model.SubUser", b =>
                 {
-                    b.Property<int>("subuserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("subuserId"), 1L, 1);
+                    b.Property<string>("subUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Useremail")
                         .IsRequired()
@@ -108,7 +105,7 @@ namespace WebApplication3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("subuserId");
+                    b.HasKey("subUserId");
 
                     b.HasIndex("Useremail");
 
@@ -162,9 +159,7 @@ namespace WebApplication3.Migrations
                 {
                     b.HasOne("WebApplication3.Model.SubUser", "subUser")
                         .WithMany("Spendings")
-                        .HasForeignKey("subuserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("subUserId");
 
                     b.Navigation("subUser");
                 });
