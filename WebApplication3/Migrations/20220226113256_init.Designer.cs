@@ -12,8 +12,8 @@ using WebApplication3.Model;
 namespace WebApplication3.Migrations
 {
     [DbContext(typeof(SpendingAppDbContext))]
-    [Migration("20220220154201_init3")]
-    partial class init3
+    [Migration("20220226113256_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -64,11 +64,8 @@ namespace WebApplication3.Migrations
 
             modelBuilder.Entity("WebApplication3.Model.Spending", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
@@ -112,6 +109,26 @@ namespace WebApplication3.Migrations
                     b.HasIndex("Useremail");
 
                     b.ToTable("SubUser");
+                });
+
+            modelBuilder.Entity("WebApplication3.Model.TokenModel", b =>
+                {
+                    b.Property<string>("JWTToken")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("JWTToken");
+
+                    b.ToTable("TokenModel");
                 });
 
             modelBuilder.Entity("WebApplication3.Model.User", b =>

@@ -5,10 +5,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApplication3.Migrations
 {
-    public partial class init3 : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "TokenModel",
+                columns: table => new
+                {
+                    JWTToken = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TokenModel", x => x.JWTToken);
+                });
+
             migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
@@ -84,8 +98,7 @@ namespace WebApplication3.Migrations
                 name: "Spending",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     subUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     product = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     productCategory = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -133,6 +146,9 @@ namespace WebApplication3.Migrations
 
             migrationBuilder.DropTable(
                 name: "Spending");
+
+            migrationBuilder.DropTable(
+                name: "TokenModel");
 
             migrationBuilder.DropTable(
                 name: "SubUser");

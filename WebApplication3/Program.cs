@@ -31,18 +31,27 @@ class Test {
             // Adding Jwt Bearer
         .AddJwtBearer(options =>
         {
-        options.SaveToken = true;
-            options.MapInboundClaims = false;
-            options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-          ValidateIssuer = true,
-          ValidateAudience = true,
-          ValidAudience = configuration["Jwt:Issuer"],
-          ValidIssuer = configuration["Jwt:Issuer"],
+            options.SaveToken = true;
+                options.MapInboundClaims = false;
+                options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+              ValidateIssuer = true,
+              ValidateAudience = true,
+              ValidAudience = configuration["Jwt:Issuer"],
+              ValidIssuer = configuration["Jwt:Issuer"],
 
-          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
-        };
+              IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+            };
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["auth-token"];
+                    return Task.CompletedTask;
+                }
+            };
+
         });
 
         builder.Services.AddAuthorization(options =>

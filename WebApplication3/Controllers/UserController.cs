@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
@@ -22,7 +25,8 @@ namespace WebApplication3.Controllers
         private readonly UserService _userService;
         private readonly TokenService _tokenService;
         private readonly SubUserService _subUserService;
-        private IConfiguration _config;    
+        private IConfiguration _config;
+        private SmtpClient _smtpClient;
 
 
         public UserController(SpendingAppDbContext context,IConfiguration configuration)
@@ -32,6 +36,12 @@ namespace WebApplication3.Controllers
             _tokenService = new TokenService(context);
             _subUserService = new SubUserService(context);
             _config = configuration;
+            _smtpClient = new SmtpClient(_config["Smtp:Host"])
+            {
+                Port = int.Parse(_config["Smtp:Port"]),
+                Credentials = new NetworkCredential(_config["Smtp:Username"], _config["Smtp:Password"]),
+                EnableSsl = true,
+            };
 
         }
 
@@ -46,7 +56,15 @@ namespace WebApplication3.Controllers
             {
                 _userService.RegisterUser(email, password);
                 String token=_tokenService.CreateAccountVerificationToken(email);
-                //send email
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.IsBodyHtml = true;
+                mailMessage.Subject = "SUBJECT";
+                string body = System.IO.File.ReadAllText(Directory.GetCurrentDirectory() + "/Templates/VerifyEmail.html");
+                body = body.Replace("%2$s", token);
+                mailMessage.Body = body;
+                mailMessage.From = new MailAddress("spendingapptest@gmail.com", "SpendingApp");
+                mailMessage.To.Add(new MailAddress(email, email));
+                _smtpClient.Send(mailMessage);
                 return StatusCode(200, "Success");
             }
             catch(Exception e) {
@@ -64,7 +82,18 @@ namespace WebApplication3.Controllers
             {
                 if (_userService.LogInUser(email, password))
                 {
-                    return StatusCode(200, GenerateJSONWebToken(email));
+                    CookieOptions jwtoptions = new CookieOptions();
+                    jwtoptions.Expires = DateTime.Now.AddDays(7);
+                    jwtoptions.HttpOnly = true;
+                    string JWTToken = GenerateJSONWebToken(email);
+                    Response.Cookies.Append("auth-token", JWTToken, jwtoptions);
+                    string refreshtoken = _tokenService.GenerateRefreshToken(JWTToken);
+                    CookieOptions refreshoptions = new CookieOptions();
+                    refreshoptions.Expires = DateTime.Now.AddDays(7);
+                    refreshoptions.HttpOnly = true;
+                    refreshoptions.Path = "refresh-token";
+                    Response.Cookies.Append("refresh-token", refreshtoken, refreshoptions);
+                    return StatusCode(200, "Success");
                 }
                 return StatusCode(400, "Unsuccessful login");
             }
@@ -82,7 +111,15 @@ namespace WebApplication3.Controllers
             try
             {
                 String token=_tokenService.CreatePwRecoveryToken(email);
-                //send email
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.IsBodyHtml = true;
+                mailMessage.Subject = "SUBJECT";
+                string body = System.IO.File.ReadAllText(Directory.GetCurrentDirectory()+"/Templates/ResetEmail.html");
+                body=body.Replace("%1$s", token);
+                mailMessage.Body = body;
+                mailMessage.From = new MailAddress("spendingapptest@gmail.com", "SpendingApp");
+                mailMessage.To.Add(new MailAddress(email, email));
+                _smtpClient.Send(mailMessage);
                 return StatusCode(200, "Success");
             }
             catch (Exception e)
@@ -125,6 +162,36 @@ namespace WebApplication3.Controllers
                 return StatusCode(400, e.Message);
             }
         }
+        [AllowAnonymous]
+        [HttpPost("refresh-token")]
+        public IActionResult RefreshToken()
+        {
+            string? usedJWTToken = HttpContext.Request.Cookies["auth-token"];
+            string? refreshToken = HttpContext.Request.Cookies["refresh-token"];
+            var email = User.FindFirst("email")?.Value;                              
+            if (usedJWTToken==null || refreshToken==null)
+            {
+                return StatusCode(403, "No token");
+            }
+            if (_tokenService.UseRefreshToken(usedJWTToken, refreshToken))
+            {
+                CookieOptions jwtoptions = new CookieOptions();
+                jwtoptions.Expires = DateTime.Now.AddDays(7);
+                jwtoptions.HttpOnly = true;
+                string JWTToken = GenerateJSONWebToken(email);
+                Response.Cookies.Append("auth-token", JWTToken, jwtoptions);
+
+                string refreshtoken = _tokenService.GenerateRefreshToken(JWTToken);
+                CookieOptions refreshoptions = new CookieOptions();
+                refreshoptions.Expires = DateTime.Now.AddDays(7);
+                refreshoptions.HttpOnly = true;
+                refreshoptions.Path = "refresh-token";
+                Response.Cookies.Append("refresh-token", refreshtoken, refreshoptions);
+                return StatusCode(200, "Success");
+            }
+
+            return StatusCode(400, "Invalid tokens");
+        }
 
 
         private string GenerateJSONWebToken(String email)
@@ -150,12 +217,12 @@ namespace WebApplication3.Controllers
         
         [HttpGet("getToken")]
         [Authorize(Policy = "email")]
-        public int TestAuth()
+        public String[] TestAuth()
         {
             var email = User.FindFirst("email")?.Value;
             var subusers = User.FindFirst("subusers")?.Value;
-            var asd=JsonSerializer.Deserialize<int[]>(subusers);
-            return asd[0];
+            var asd=JsonSerializer.Deserialize<String[]>(subusers);
+            return asd;
         }
 
 

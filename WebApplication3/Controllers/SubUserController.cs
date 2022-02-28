@@ -20,12 +20,14 @@ namespace WebApplication3.Controllers
 
 
         private readonly SubUserService _subUserService;
+        private readonly TokenService _tokenService;
         private IConfiguration _config;
 
 
         public SubUserController(SpendingAppDbContext context, IConfiguration configuration)
         {
 
+            _tokenService = new TokenService(context);
             _subUserService = new SubUserService(context);
             _config = configuration;
 
@@ -41,7 +43,20 @@ namespace WebApplication3.Controllers
             {
                 var email = User.FindFirst("email")?.Value;
                 _subUserService.CreateSubUserForEmail(email, name);
-                return StatusCode(200, GenerateJSONWebToken(email));
+
+                CookieOptions jwtoptions = new CookieOptions();
+                jwtoptions.Expires = DateTime.Now.AddDays(7);
+                jwtoptions.HttpOnly = true;
+                string JWTToken = GenerateJSONWebToken(email);
+                Response.Cookies.Append("auth-token", JWTToken, jwtoptions);
+
+                string refreshtoken = _tokenService.GenerateRefreshToken(JWTToken);
+                CookieOptions refreshoptions = new CookieOptions();
+                refreshoptions.Expires = DateTime.Now.AddDays(7);
+                refreshoptions.HttpOnly = true;
+                refreshoptions.Path = "refresh-token";
+                Response.Cookies.Append("refresh-token", refreshtoken, refreshoptions);
+                return StatusCode(200, "Success");
             }
             catch (Exception e)
             {
@@ -65,7 +80,19 @@ namespace WebApplication3.Controllers
             try
             {
                 _subUserService.DeleteSubUserByID(id);
-                return StatusCode(200, GenerateJSONWebToken(email));
+                CookieOptions jwtoptions = new CookieOptions();
+                jwtoptions.Expires = DateTime.Now.AddDays(7);
+                jwtoptions.HttpOnly = true;
+                string JWTToken = GenerateJSONWebToken(email);
+                Response.Cookies.Append("auth-token", JWTToken, jwtoptions);
+
+                string refreshtoken = _tokenService.GenerateRefreshToken(JWTToken);
+                CookieOptions refreshoptions = new CookieOptions();
+                refreshoptions.Expires = DateTime.Now.AddDays(7);
+                refreshoptions.HttpOnly = true;
+                refreshoptions.Path = "refresh-token";
+                Response.Cookies.Append("refresh-token", refreshtoken, refreshoptions);
+                return StatusCode(200,"Success");
             }
             catch (Exception e)
             {
@@ -76,10 +103,8 @@ namespace WebApplication3.Controllers
 
         [Authorize(Policy = "subusers")]
         [HttpPost("rename")]
-        public IActionResult RenameSubUser()
+        public IActionResult RenameSubUser(String id, String name)
         {
-            String id = HttpContext.Request.Form["subuserid"];
-            String name = HttpContext.Request.Form["name"];
             var email = User.FindFirst("email")?.Value;
             var subUsersString = User.FindFirst("subusers")?.Value;
             String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);

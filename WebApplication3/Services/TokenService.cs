@@ -94,6 +94,31 @@ namespace WebApplication3.Services
 
         }
 
+        public String GenerateRefreshToken(string JWTToken)
+        {
+            TokenModel tokenModel = new TokenModel(JWTToken);
+            _dbContext.Add<TokenModel>(tokenModel);
+            _dbContext.SaveChanges();
+            return tokenModel.RefreshToken;
+        }
+
+        public bool UseRefreshToken(string JWTToken,string RefreshToken)
+        {
+            TokenModel? tokenModel=_dbContext.Find<TokenModel>(JWTToken);
+            if(tokenModel == null)
+            {
+                return false;
+            }
+            if (tokenModel.RefreshToken == RefreshToken && 
+                tokenModel.RefreshTokenExpiryTime > DateTime.Now
+                && tokenModel.IsUsed == false)
+            {
+                tokenModel.IsUsed = true;
+                _dbContext.SaveChanges();
+                return true;
+            }
+            return false;
+        }
 
 
     }
