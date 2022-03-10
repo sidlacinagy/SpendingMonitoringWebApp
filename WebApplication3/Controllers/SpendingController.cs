@@ -35,32 +35,26 @@ namespace WebApplication3.Controllers
 
         [Authorize(Policy = "subusers")]
         [HttpPost("add")]
-        public IActionResult AddSpending()
+        public IActionResult AddSpending([FromForm] String product, [FromForm] String productCategory, [FromForm] int price,
+            [FromForm] String date, [FromForm] String subuserid)
         {
             
-            String product = HttpContext.Request.Form["product"];
-            String productCategory = HttpContext.Request.Form["productCategory"];
-            int price = Int32.Parse(HttpContext.Request.Form["price"]);
-            DateTime date = DateTime.Parse(HttpContext.Request.Form["date"]);
-            String subuserid = HttpContext.Request.Form["subuserid"];
 
+            DateTime dateTime = DateTime.Parse(date);
             var subUsersString = User.FindFirst("subusers")?.Value;
             String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);
             if (!subusers.Contains(subuserid))
             {
-                return StatusCode(403, "Invalid subuserid");
+                return StatusCode(403, JsonSerializer.Serialize("Invalid subuserid"));
             }
-
-
             try
             {
-                _spendingService.AddSpendingToSubUser(subuserid, product, productCategory, price, date);
-                //send email
-                return StatusCode(200, "Success");
+                _spendingService.AddSpendingToSubUser(subuserid, product, productCategory, price, dateTime);
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
 
         }
@@ -68,82 +62,65 @@ namespace WebApplication3.Controllers
 
         [Authorize(Policy = "subusers")]
         [HttpPost("update")]
-        public IActionResult UpdateSpending()
+        public IActionResult UpdateSpending([FromForm] String product, [FromForm] String productCategory, [FromForm] int price,
+            [FromForm] String date, [FromForm] String spendingId)
         {
 
-            String product = HttpContext.Request.Form["product"];
-            String productCategory = HttpContext.Request.Form["productCategory"];
-            int price = Int32.Parse(HttpContext.Request.Form["price"]);
-            DateTime date = DateTime.Parse(HttpContext.Request.Form["date"]);
-            String spendingId = HttpContext.Request.Form["spendingid"];
-
+            DateTime dateTime = DateTime.Parse(HttpContext.Request.Form["date"]);
             var email = User.FindFirst("email")?.Value;
-
-
             try
             {
-                _spendingService.UpdateSpendingById(email,spendingId,product,productCategory,price,date);
-                //send email
-                return StatusCode(200, "Success");
+                _spendingService.UpdateSpendingById(email,spendingId,product,productCategory,price,dateTime);
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
 
         }
 
         [Authorize(Policy = "subusers")]
         [HttpPost("remove")]
-        public IActionResult RemoveSpending()
+        public IActionResult RemoveSpending([FromForm] String spendingId)
         {
-
-            String spendingId = HttpContext.Request.Form["spendingid"];
             var email = User.FindFirst("email")?.Value;
-
             try
             {
                 _spendingService.RemoveSpendingById(email,spendingId);
-                //send email
-                return StatusCode(200, "Success");
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
 
         }
 
         [Authorize(Policy = "subusers")]
         [HttpPost("subuser")]
-        public IActionResult GetSubUserSpending()
+        public IActionResult GetSubUserSpending([FromForm] String subUserId)
         {
-
-            String subUserId = HttpContext.Request.Form["subuserid"];
             var subUsersString = User.FindFirst("subusers")?.Value;
             String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);
             if (subusers.Contains(subUserId))
             {
-                return StatusCode(400, "Invalid subuser");
+                return StatusCode(400, JsonSerializer.Serialize("Invalid subuser"));
             }
 
-            return StatusCode(200, _spendingService.GetAllSpendingBySubUser(subUserId));
+            return StatusCode(200, JsonSerializer.Serialize(_spendingService.GetAllSpendingBySubUser(subUserId)));
 
         }
 
         [Authorize(Policy = "subuser")]
-        [HttpPost("user")]
+        [HttpGet("user")]
         public IActionResult GetUserSpending()
         {
 
             var email = User.FindFirst("email")?.Value;
-            
-
-            return StatusCode(200, _spendingService.GetAllSpendingByUser(email));
+            return StatusCode(200, JsonSerializer.Serialize(_spendingService.GetAllSpendingByUser(email)));
 
         }
-
-
 
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -18,6 +19,7 @@ namespace WebApplication3.Controllers
 
     [Route("api/user")]
     [ApiController]
+    [EnableCors]
     public class UserController : Controller
     {
         
@@ -48,10 +50,8 @@ namespace WebApplication3.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register()
+        public IActionResult Register([FromForm] String email, [FromForm] String password)
         {
-            String email = HttpContext.Request.Form["email"];
-            String password = HttpContext.Request.Form["password"];
             try
             {
                 _userService.RegisterUser(email, password);
@@ -65,19 +65,17 @@ namespace WebApplication3.Controllers
                 mailMessage.From = new MailAddress("spendingapptest@gmail.com", "SpendingApp");
                 mailMessage.To.Add(new MailAddress(email, email));
                 _smtpClient.Send(mailMessage);
-                return StatusCode(200, "Success");
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
             catch(Exception e) {
-                return StatusCode(400,e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
             
         }
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Login()
+        public IActionResult Login([FromForm] String email, [FromForm] String password)
         {
-            String email = HttpContext.Request.Form["email"];
-            String password = HttpContext.Request.Form["password"];
             try
             {
                 if (_userService.LogInUser(email, password))
@@ -91,23 +89,22 @@ namespace WebApplication3.Controllers
                     CookieOptions refreshoptions = new CookieOptions();
                     refreshoptions.Expires = DateTime.Now.AddDays(7);
                     refreshoptions.HttpOnly = true;
-                    refreshoptions.Path = "refresh-token";
+                    refreshoptions.Path = "/api/user/refreshtoken";
                     Response.Cookies.Append("refresh-token", refreshtoken, refreshoptions);
-                    return StatusCode(200, "Success");
+                    return Ok(JsonSerializer.Serialize("Success"));
                 }
-                return StatusCode(400, "Unsuccessful login");
+                return StatusCode(400, JsonSerializer.Serialize("Unsuccessful login"));
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
 
         }
         [AllowAnonymous]
         [HttpPost("getResetToken")]
-        public IActionResult PasswordReset()
+        public IActionResult PasswordReset([FromForm] String email)
         {
-            String email = HttpContext.Request.Form["email"];
             try
             {
                 String token=_tokenService.CreatePwRecoveryToken(email);
@@ -120,58 +117,62 @@ namespace WebApplication3.Controllers
                 mailMessage.From = new MailAddress("spendingapptest@gmail.com", "SpendingApp");
                 mailMessage.To.Add(new MailAddress(email, email));
                 _smtpClient.Send(mailMessage);
-                return StatusCode(200, "Success");
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
 
         }
         [AllowAnonymous]
         [HttpPost("resetPassword")]
-        public IActionResult Reset()
+        public IActionResult Reset([FromForm] String password, [FromForm] String token)
         {
-            String password = HttpContext.Request.Form["password"];
-            String token= HttpContext.Request.Form["token"];
             try
             {
                 String email=_tokenService.GetEmailByResetToken(token);
                 _userService.ChangePassword(email, password);
-                return StatusCode(200, "Success");
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
 
         }
         [AllowAnonymous]
         [HttpPost("verify")]
-        public IActionResult Verify()
+        public IActionResult Verify([FromForm] String token)
         {
-            String token = HttpContext.Request.Form["token"];
             try
             {
                 String email = _tokenService.GetEmailByVerificationToken(token);
                 _userService.VerifyUser(email);
-                return StatusCode(200, "Success");
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
         }
         [AllowAnonymous]
-        [HttpPost("refresh-token")]
+        [HttpGet("refreshtoken")]
         public IActionResult RefreshToken()
         {
             string? usedJWTToken = HttpContext.Request.Cookies["auth-token"];
             string? refreshToken = HttpContext.Request.Cookies["refresh-token"];
-            var email = User.FindFirst("email")?.Value;                              
+            //var email = User.FindFirst("email")?.Value;
             if (usedJWTToken==null || refreshToken==null)
             {
-                return StatusCode(403, "No token");
+                return StatusCode(403, "Invalid/no token");
+            }
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadToken(usedJWTToken) as JwtSecurityToken;
+            var email = token.Claims.First(claim => claim.Type == "email").Value;
+            if(email==null)
+            {
+                return StatusCode(403, JsonSerializer.Serialize("Invalid/no token"));
             }
             if (_tokenService.UseRefreshToken(usedJWTToken, refreshToken))
             {
@@ -185,12 +186,12 @@ namespace WebApplication3.Controllers
                 CookieOptions refreshoptions = new CookieOptions();
                 refreshoptions.Expires = DateTime.Now.AddDays(7);
                 refreshoptions.HttpOnly = true;
-                refreshoptions.Path = "refresh-token";
+                refreshoptions.Path = "/api/user/refreshtoken";
                 Response.Cookies.Append("refresh-token", refreshtoken, refreshoptions);
-                return StatusCode(200, "Success");
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
 
-            return StatusCode(400, "Invalid tokens");
+            return StatusCode(400, JsonSerializer.Serialize("Invalid tokens"));
         }
 
 
@@ -208,7 +209,7 @@ namespace WebApplication3.Controllers
               issuer: _config["Jwt:Issuer"],
               audience: _config["Jwt:Issuer"],
               claims: claims,
-              expires: DateTime.Now.AddMinutes(120),
+              expires: DateTime.Now.AddMinutes(15),
               signingCredentials: credentials);
                 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -217,14 +218,13 @@ namespace WebApplication3.Controllers
         
         [HttpGet("getToken")]
         [Authorize(Policy = "email")]
-        public String[] TestAuth()
+        public IActionResult TestAuth()
         {
             var email = User.FindFirst("email")?.Value;
             var subusers = User.FindFirst("subusers")?.Value;
             var asd=JsonSerializer.Deserialize<String[]>(subusers);
-            return asd;
+            return StatusCode(200, asd);
         }
-
 
     }
 }

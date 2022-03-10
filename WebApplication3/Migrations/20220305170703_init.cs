@@ -13,14 +13,14 @@ namespace WebApplication3.Migrations
                 name: "TokenModel",
                 columns: table => new
                 {
-                    JWTToken = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    JWTToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsUsed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TokenModel", x => x.JWTToken);
+                    table.PrimaryKey("PK_TokenModel", x => x.RefreshToken);
                 });
 
             migrationBuilder.CreateTable(

@@ -32,14 +32,15 @@ class Test {
         .AddJwtBearer(options =>
         {
             options.SaveToken = true;
-                options.MapInboundClaims = false;
-                options.RequireHttpsMetadata = false;
+            options.MapInboundClaims = false;
+            options.RequireHttpsMetadata = false;
             options.TokenValidationParameters = new TokenValidationParameters()
             {
               ValidateIssuer = true,
               ValidateAudience = true,
               ValidAudience = configuration["Jwt:Issuer"],
               ValidIssuer = configuration["Jwt:Issuer"],
+              ClockSkew = TimeSpan.Zero,
 
               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
             };
@@ -52,6 +53,16 @@ class Test {
                 }
             };
 
+        });
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200").AllowCredentials();
+                    builder.AllowAnyHeader();
+                });
         });
 
         builder.Services.AddAuthorization(options =>
@@ -69,6 +80,7 @@ class Test {
             app.UseSwaggerUI();
         }
 
+        app.UseCors();
 
         app.UseAuthentication();
 

@@ -104,12 +104,12 @@ namespace WebApplication3.Services
 
         public bool UseRefreshToken(string JWTToken,string RefreshToken)
         {
-            TokenModel? tokenModel=_dbContext.Find<TokenModel>(JWTToken);
+            TokenModel? tokenModel=_dbContext.Find<TokenModel>(RefreshToken);
             if(tokenModel == null)
             {
                 return false;
             }
-            if (tokenModel.RefreshToken == RefreshToken && 
+            if (tokenModel.JWTToken == JWTToken && 
                 tokenModel.RefreshTokenExpiryTime > DateTime.Now
                 && tokenModel.IsUsed == false)
             {

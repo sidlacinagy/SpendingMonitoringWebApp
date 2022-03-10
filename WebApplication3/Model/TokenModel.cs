@@ -18,9 +18,10 @@ namespace WebApplication3.Model
             this.IsUsed = false;
         }
 
-        [Key]
+        
         public string JWTToken { get; set; }
 
+        [Key]
         public string RefreshToken { get; set; }
 
         public DateTime RefreshTokenExpiryTime { get; set; }

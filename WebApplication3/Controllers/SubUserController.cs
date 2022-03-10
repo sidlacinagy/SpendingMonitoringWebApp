@@ -36,9 +36,8 @@ namespace WebApplication3.Controllers
 
         [Authorize(Policy = "email")]
         [HttpPost("add")]
-        public IActionResult AddSubUser()
+        public IActionResult AddSubUser([FromForm] String name)
         {
-            String name = HttpContext.Request.Form["name"];
             try
             {
                 var email = User.FindFirst("email")?.Value;
@@ -54,32 +53,31 @@ namespace WebApplication3.Controllers
                 CookieOptions refreshoptions = new CookieOptions();
                 refreshoptions.Expires = DateTime.Now.AddDays(7);
                 refreshoptions.HttpOnly = true;
-                refreshoptions.Path = "refresh-token";
+                refreshoptions.Path = "/api/user/refreshtoken";
                 Response.Cookies.Append("refresh-token", refreshtoken, refreshoptions);
-                return StatusCode(200, "Success");
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
 
         }
 
         [Authorize(Policy = "subusers")]
         [HttpPost("remove")]
-        public IActionResult RemoveSubUser()
+        public IActionResult RemoveSubUser([FromForm] String subuserid)
         {
-            String id = HttpContext.Request.Form["subuserid"];
             var email = User.FindFirst("email")?.Value;
             var subUsersString = User.FindFirst("subusers")?.Value;
             String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);
-            if (!subusers.Contains(id))
+            if (!subusers.Contains(subuserid))
             {
-                return StatusCode(403, "Invalid subuserid");
+                return StatusCode(403, JsonSerializer.Serialize("Invalid subuserid"));
             }
             try
             {
-                _subUserService.DeleteSubUserByID(id);
+                _subUserService.DeleteSubUserByID(subuserid);
                 CookieOptions jwtoptions = new CookieOptions();
                 jwtoptions.Expires = DateTime.Now.AddDays(7);
                 jwtoptions.HttpOnly = true;
@@ -90,37 +88,37 @@ namespace WebApplication3.Controllers
                 CookieOptions refreshoptions = new CookieOptions();
                 refreshoptions.Expires = DateTime.Now.AddDays(7);
                 refreshoptions.HttpOnly = true;
-                refreshoptions.Path = "refresh-token";
+                refreshoptions.Path = "/api/user/refreshtoken";
                 Response.Cookies.Append("refresh-token", refreshtoken, refreshoptions);
-                return StatusCode(200,"Success");
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
 
         }
 
         [Authorize(Policy = "subusers")]
         [HttpPost("rename")]
-        public IActionResult RenameSubUser(String id, String name)
+        public IActionResult RenameSubUser([FromForm] String id, [FromForm] String name)
         {
             var email = User.FindFirst("email")?.Value;
             var subUsersString = User.FindFirst("subusers")?.Value;
             String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);
             if (!subusers.Contains(id))
             {
-                return StatusCode(403, "Invalid subuserid");
+                return StatusCode(403, JsonSerializer.Serialize("Invalid subuserid"));
             }
             try
             {
                 _subUserService.RenameSubUserByID(id,name);
-                return StatusCode(200, "Success");
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
 
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
 
         }
@@ -139,7 +137,7 @@ namespace WebApplication3.Controllers
               issuer: _config["Jwt:Issuer"],
               audience: _config["Jwt:Issuer"],
               claims: claims,
-              expires: DateTime.Now.AddMinutes(120),
+              expires: DateTime.Now.AddMinutes(15),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

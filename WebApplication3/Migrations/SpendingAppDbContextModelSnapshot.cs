@@ -111,20 +111,20 @@ namespace WebApplication3.Migrations
 
             modelBuilder.Entity("WebApplication3.Model.TokenModel", b =>
                 {
-                    b.Property<string>("JWTToken")
+                    b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("RefreshToken")
+                    b.Property<string>("JWTToken")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("JWTToken");
+                    b.HasKey("RefreshToken");
 
                     b.ToTable("TokenModel");
                 });
