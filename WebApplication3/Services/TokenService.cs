@@ -80,7 +80,7 @@ namespace WebApplication3.Services
                        .FirstOrDefault();
             if (resToken == null)
             {
-                throw new Exception("No such token");
+                throw new Exception("Invalid token");
             }
             else
             {

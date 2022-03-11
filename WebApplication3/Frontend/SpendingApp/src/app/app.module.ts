@@ -11,6 +11,8 @@ import { RegisterComponent } from './register/register.component';
 import { JwtInterceptor } from './jwt.interceptor';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
+import { RegistersuccessComponent } from './register/registersuccess/registersuccess.component';
+import { RegisterformComponent } from './register/registerform/registerform.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { ResetpasswordComponent } from './resetpassword/resetpassword.component'
     LoginComponent,
     HomeComponent,
     RegisterComponent,
-    ResetpasswordComponent
+    ResetpasswordComponent,
+    RegistersuccessComponent,
+    RegisterformComponent,
   ],
   imports: [
     BrowserModule,

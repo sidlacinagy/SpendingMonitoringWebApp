@@ -29,6 +29,24 @@ export class HttpHandlerService {
     );
   }
 
+  register(data:any){
+    return this.http
+    .post<String>(
+      'https://localhost:7098/api/user/register',
+      this.asFormData(data),
+      {withCredentials:true}
+    );
+  }
+
+  resetpassword(data:any){
+    return this.http
+    .post<String>(
+      'https://localhost:7098/api/user/resetPassword',
+      this.asFormData(data),
+      {withCredentials:true}
+    );
+  }
+
   resetToken(){
     return this.http
     .get<any>(

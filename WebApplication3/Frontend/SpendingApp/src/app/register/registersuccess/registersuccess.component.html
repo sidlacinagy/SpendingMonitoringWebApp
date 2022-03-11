@@ -1,0 +1,22 @@
+<div style=" background-image: linear-gradient(to right, #8feeff , #ebc0ff);">
+    <div class="d-flex align-items-center justify-content-center vh-100 flex-column">
+        <div class="card h3" style=" background-image: linear-gradient(to right, #c4d0fd , rgb(225, 211, 250));">
+            <div class="card-body m-5">
+                <div class="text-center m-5 h1">
+                    Successful registration
+                </div>
+                <div class="m-5 text-center">
+                    <span>An email was sent to </span>
+                    <hr>
+                    <span class="h1">{{this.email}}</span>
+                    <hr>
+                    <span> to confirm your account.</span>
+                </div>
+                <div class="m-5 text-center">
+                    <div class="title mt-5 mb-2 text-center">Go back to the login page</div>
+                    <button [routerLink]="['/login']" class="btn btn-primary btn-lg mt-2" style="background-color:#b0a0f5;border-color:#d9d4f3;">Login page</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

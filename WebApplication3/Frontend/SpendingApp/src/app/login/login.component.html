@@ -4,29 +4,35 @@
             Welcome To The SpendingApp!
         </div>
         <div class="h2" *ngIf="errormsg" style="color:#621e51">{{errormsg}}</div>
-        <div class="card h3 w-25" style=" background-image: linear-gradient(to right, #c4d0fd , rgb(225, 211, 250));">
+        <div class="card h3" style=" background-image: linear-gradient(to right, #c4d0fd , rgb(225, 211, 250));">
             <div class="card-header text-center">
                 Sign in to your account
             </div>
             <div class="card-body">
-                <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+                <form [formGroup]="userData">
                     <div class="mb-5">
-                        <label for="exampleInputEmail1" class="form-label">Email address</label>
-                        <span class="float-end h5">
-                        <a [routerLink]="['/register']">Don't have an account?</a>
-                    </span>
-                        <input type="email" class="form-control" [(ngModel)]="email" name="email" id="email" aria-describedby="emailHelp" style="background-color:#f9f7fdd3" required>
+                        <div>
+                            <label for="email" class="form-label">Email address</label>
+                            <span class="float-end h5 ms-5">
+                                <a [routerLink]="['/register']">Don't have an account?</a>
+                            </span>
+                        </div>
+                        <input [class.is-invalid]="emailData?.invalid && emailData?.touched" type="email" class="form-control" formControlName="email" name="email" id="email" aria-describedby="emailHelp" style="background-color:#f9f7fdd3" required>
                         <div id="emailHelp" class="h6 mt-3">We'll never share your email with anyone else.</div>
                     </div>
                     <div class="mb-5">
-                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <label for="password" class="form-label">Password</label>
                         <span class="float-end h5">
-                        <a [routerLink]="['/resetpassword']">Forgot password?</a>
-                    </span>
-                        <input type="password" [(ngModel)]="password" name="password" class="form-control" id="password" style=" background-color:#f9f7fdd3" required>
+                            <a [routerLink]="['/resetpassword']">Forgot password?</a>
+                            <i class="fa float-end ms-2 mt-1" [ngClass]="{
+                                'fa-eye-slash': !fieldTextType,
+                                'fa-eye': fieldTextType
+                              }" (click)="toggleFieldTextType()"></i>
+                        </span>
+                        <input [class.is-invalid]="passwordData?.invalid && passwordData?.touched" [type]="fieldTextType ? 'text' : 'password'" formControlName="password" name="password" class="form-control" id="password" style=" background-color:#f9f7fdd3" required>
                     </div>
                     <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary btn-lg mt-2" style="background-color:#b0a0f5;border-color:#d9d4f3;">Sign in</button>
+                        <button type="submit" (click)="onSubmit()" class="btn btn-primary btn-lg mt-2" style="background-color:#b0a0f5;border-color:#d9d4f3;">Sign in</button>
                     </div>
                 </form>
             </div>

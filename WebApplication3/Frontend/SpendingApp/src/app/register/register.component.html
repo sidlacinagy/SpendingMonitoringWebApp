@@ -1,1 +1,2 @@
-<p>register works!</p>
+<app-registerform *ngIf="!success" (newItemEvent)="switchSuccess($event)"></app-registerform>
+<app-registersuccess *ngIf="success" [email]="email"></app-registersuccess>
