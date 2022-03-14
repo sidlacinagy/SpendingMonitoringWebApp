@@ -65,6 +65,23 @@ namespace WebApplication3.Controllers
         }
 
         [Authorize(Policy = "subusers")]
+        [HttpGet("get-all")]
+        public IActionResult GetAllSubuser()
+        {
+            try
+            {
+                var email = User.FindFirst("email")?.Value;
+                SubUser[] subusers=_subUserService.GetSubUsersByID(email);
+                return StatusCode(200, subusers);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
+            }
+
+        }
+
+        [Authorize(Policy = "subusers")]
         [HttpPost("remove")]
         public IActionResult RemoveSubUser([FromForm] String subuserid)
         {
@@ -127,7 +144,7 @@ namespace WebApplication3.Controllers
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            string jsonString = JsonSerializer.Serialize(_subUserService.GetSubUsersByID(email));
+            string jsonString = JsonSerializer.Serialize(_subUserService.GetSubUsersIdByID(email));
             var claims = new Claim[]
             {
                 new Claim("email", email),

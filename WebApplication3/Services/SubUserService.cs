@@ -51,11 +51,21 @@ namespace WebApplication3.Services
             _dbContext.SaveChanges();
         }
 
-        public String[] GetSubUsersByID(String email)
+        public String[] GetSubUsersIdByID(String email)
         {
             var Subusers = from b in _dbContext.SubUser
                         where b.User.email.Equals(email)
                         select b.subUserId;
+            return Subusers.ToArray();
+
+
+        }
+
+        public SubUser[] GetSubUsersByID(String email)
+        {
+            var Subusers = from b in _dbContext.SubUser
+                           where b.User.email.Equals(email)
+                           select b;
             return Subusers.ToArray();
 
 
@@ -73,6 +83,15 @@ namespace WebApplication3.Services
             }
             return subuser.User.email.Equals(email);
         }
+
+        public Spending[] GetAllSpendingBySubUser(String subUserId)
+        {
+            Spending[] spendings = _dbContext.Spending
+                        .Where(b => b.subUser.subUserId.Equals(subUserId))
+                        .ToArray();
+            return spendings;
+        }
+
 
 
     }

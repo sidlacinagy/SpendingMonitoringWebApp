@@ -20,6 +20,14 @@ export class HttpHandlerService {
       );
   }
 
+  getSubUsers(){
+    return this.http
+    .get<Array<any>>(
+      'https://localhost:7098/api/subuser/get-all',
+      {withCredentials:true}
+    );
+  }
+
   login(data:any){
     return this.http
     .post<String>(
@@ -28,11 +36,27 @@ export class HttpHandlerService {
       {withCredentials:true}
     );
   }
+  logout(){
+    return this.http
+    .get<String>(
+      'https://localhost:7098/api/user/logout',
+      {withCredentials:true}
+    );
+  }
 
   register(data:any){
     return this.http
     .post<String>(
       'https://localhost:7098/api/user/register',
+      this.asFormData(data),
+      {withCredentials:true}
+    );
+  }
+
+  getResetToken(data:any){
+    return this.http
+    .post<String>(
+      'https://localhost:7098/api/user/getResetToken',
       this.asFormData(data),
       {withCredentials:true}
     );
@@ -51,6 +75,15 @@ export class HttpHandlerService {
     return this.http
     .get<any>(
       'https://localhost:7098/api/user/refreshtoken',
+      {withCredentials:true}
+    );
+  }
+
+  verify(data:any){
+    return this.http
+    .post<String>(
+      'https://localhost:7098/api/user/verify',
+      this.asFormData(data),
       {withCredentials:true}
     );
   }

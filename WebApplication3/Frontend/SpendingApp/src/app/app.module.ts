@@ -13,6 +13,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
 import { RegistersuccessComponent } from './register/registersuccess/registersuccess.component';
 import { RegisterformComponent } from './register/registerform/registerform.component';
+import { ForgotpasswordComponent } from './forgotpassword/forgotpassword.component';
+import { VerifyComponent } from './verify/verify.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { ViewSpendingComponent } from './Spending/view-spending/view-spending.component';
+import { DeleteSpendingComponent } from './Spending/delete-spending/delete-spending.component';
+import { CreateSpendingComponent } from './Spending/create-spending/create-spending.component';
+import { HomeBaseComponent } from './Spending/home-base/home-base.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +30,13 @@ import { RegisterformComponent } from './register/registerform/registerform.comp
     ResetpasswordComponent,
     RegistersuccessComponent,
     RegisterformComponent,
+    ForgotpasswordComponent,
+    VerifyComponent,
+    NavbarComponent,
+    ViewSpendingComponent,
+    DeleteSpendingComponent,
+    CreateSpendingComponent,
+    HomeBaseComponent,
   ],
   imports: [
     BrowserModule,

@@ -121,7 +121,7 @@ namespace WebApplication3.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(400, JsonSerializer.Serialize(e.Message));
+                return StatusCode(200, JsonSerializer.Serialize("Success"));
             }
 
         }
@@ -194,12 +194,29 @@ namespace WebApplication3.Controllers
             return StatusCode(400, JsonSerializer.Serialize("Invalid tokens"));
         }
 
+        [AllowAnonymous]
+        [HttpGet("logout")]
+        public IActionResult Logout()
+        {
+            CookieOptions jwtoptions = new CookieOptions();
+            jwtoptions.Expires = DateTime.Now.AddDays(-7);
+            jwtoptions.HttpOnly = true;
+            string JWTToken = "deleted";
+            Response.Cookies.Append("auth-token", JWTToken, jwtoptions);
 
+            string refreshtoken = "deleted";
+            CookieOptions refreshoptions = new CookieOptions();
+            refreshoptions.Expires = DateTime.Now.AddDays(-7);
+            refreshoptions.HttpOnly = true;
+            refreshoptions.Path = "/api/user/refreshtoken";
+            Response.Cookies.Append("refresh-token", refreshtoken, refreshoptions);
+            return StatusCode(200, JsonSerializer.Serialize("Success"));
+        }
         private string GenerateJSONWebToken(String email)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            string jsonString = JsonSerializer.Serialize(_subUserService.GetSubUsersByID(email));
+            string jsonString = JsonSerializer.Serialize(_subUserService.GetSubUsersIdByID(email));
             var claims = new Claim[]
             {
                 new Claim("email", email),

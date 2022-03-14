@@ -1,0 +1,27 @@
+.active {
+    padding-bottom: 15px;
+    position: relative;
+}
+
+.active:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgb(198, 167, 218);
+    height: 7px;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.nav-item {
+    padding-left: 0.5em;
+}
+
+.navbar {
+    background-color: rgb(254, 239, 255) !important;
+}
+
+a:hover {
+    cursor: pointer;
+}
