@@ -20,6 +20,8 @@ import { ViewSpendingComponent } from './Spending/view-spending/view-spending.co
 import { DeleteSpendingComponent } from './Spending/delete-spending/delete-spending.component';
 import { CreateSpendingComponent } from './Spending/create-spending/create-spending.component';
 import { HomeBaseComponent } from './Spending/home-base/home-base.component';
+import { SubUserEditComponent } from './sub-user-edit/sub-user-edit.component';
+import { SubUserEditFormComponent } from './sub-user-edit/sub-user-edit-form/sub-user-edit-form.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { HomeBaseComponent } from './Spending/home-base/home-base.component';
     DeleteSpendingComponent,
     CreateSpendingComponent,
     HomeBaseComponent,
+    SubUserEditComponent,
+    SubUserEditFormComponent,
   ],
   imports: [
     BrowserModule,

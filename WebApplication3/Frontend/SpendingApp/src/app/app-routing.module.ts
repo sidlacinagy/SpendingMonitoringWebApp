@@ -9,6 +9,7 @@ import { CreateSpendingComponent } from './Spending/create-spending/create-spend
 import { DeleteSpendingComponent } from './Spending/delete-spending/delete-spending.component';
 import { HomeBaseComponent } from './Spending/home-base/home-base.component';
 import { ViewSpendingComponent } from './Spending/view-spending/view-spending.component';
+import { SubUserEditComponent } from './sub-user-edit/sub-user-edit.component';
 import { VerifyComponent } from './verify/verify.component';
 
 const routes: Routes = [
@@ -30,6 +31,10 @@ const routes: Routes = [
     {
       path: 'delete', 
       component: DeleteSpendingComponent, 
+    },
+    { 
+      path: 'subusers', 
+      component: SubUserEditComponent
     },
   ]},
   { path: 'register', component: RegisterComponent},

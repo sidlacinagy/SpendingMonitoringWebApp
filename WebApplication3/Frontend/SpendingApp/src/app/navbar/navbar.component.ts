@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpHandlerService } from '../shared/http-handler.service';
+import { SubUser } from '../shared/subuser.model';
 import { SubUserService } from '../shared/subuser.service';
 
 
@@ -30,5 +31,8 @@ export class NavbarComponent implements OnInit {
     console.log(this.subUserService.subusers);
   }
 
+  switchUser(subuser:SubUser){
+    this.subUserService.currentSubUser=subuser;
+  }
 
 }

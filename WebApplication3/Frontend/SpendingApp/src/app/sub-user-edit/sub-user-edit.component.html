@@ -1,0 +1,8 @@
+{{errormsg}}
+<li *ngFor="let subuser of this.subUserService.subusers">
+    <app-sub-user-edit-form [subuser]="subuser"></app-sub-user-edit-form>
+</li>
+<div>
+    <input type="text" [(ngModel)]="newUserName">
+    <button class="btn btn-primary" (click)="createNewUser()">Create new subuser</button>
+</div>

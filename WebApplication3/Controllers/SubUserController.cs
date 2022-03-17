@@ -82,7 +82,7 @@ namespace WebApplication3.Controllers
         }
 
         [Authorize(Policy = "subusers")]
-        [HttpPost("remove")]
+        [HttpPost("delete")]
         public IActionResult RemoveSubUser([FromForm] String subuserid)
         {
             var email = User.FindFirst("email")?.Value;
@@ -118,18 +118,18 @@ namespace WebApplication3.Controllers
 
         [Authorize(Policy = "subusers")]
         [HttpPost("rename")]
-        public IActionResult RenameSubUser([FromForm] String id, [FromForm] String name)
+        public IActionResult RenameSubUser([FromForm] String subuserid, [FromForm] String name)
         {
             var email = User.FindFirst("email")?.Value;
             var subUsersString = User.FindFirst("subusers")?.Value;
             String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);
-            if (!subusers.Contains(id))
+            if (!subusers.Contains(subuserid))
             {
                 return StatusCode(403, JsonSerializer.Serialize("Invalid subuserid"));
             }
             try
             {
-                _subUserService.RenameSubUserByID(id,name);
+                _subUserService.RenameSubUserByID(subuserid, name);
                 return StatusCode(200, JsonSerializer.Serialize("Success"));
 
             }

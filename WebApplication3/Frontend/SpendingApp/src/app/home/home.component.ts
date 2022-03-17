@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpHandlerService } from '../shared/http-handler.service';
+import { SubUserService } from '../shared/subuser.service';
 
 @Component({
   selector: 'app-home',
@@ -9,14 +10,10 @@ import { HttpHandlerService } from '../shared/http-handler.service';
 export class HomeComponent implements OnInit {
 
   constructor(
-    private httpHandlerService: HttpHandlerService
+    private httpHandlerService: HttpHandlerService,
   ) { }
 
   ngOnInit(): void {
-  }
-  test(){
-    
-    this.httpHandlerService.testAuth().subscribe( as => console.log(as));
   }
 
 }

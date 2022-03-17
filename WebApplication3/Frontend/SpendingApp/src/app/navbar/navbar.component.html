@@ -29,9 +29,9 @@
                 <li class="nav-item dropdown float-end">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Manage users</a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li (click)="print()"><a class="dropdown-item">Switch subuser</a></li>
-                        <li *ngFor="let subuser of this.subUserService.subusers">
-                            <div>{{subuser.name}}</div>
+                        <li [routerLink]="['subusers']"><a class="dropdown-item">Edit subusers</a></li>
+                        <li *ngFor="let subuser of this.subUserService.subusers" (click)="switchUser(subuser)">
+                            <a class="dropdown-item">{{subuser.name}}</a>
                         </li>
                         <li (click)="logout()"><a class="dropdown-item">Log out</a></li>
                     </ul>

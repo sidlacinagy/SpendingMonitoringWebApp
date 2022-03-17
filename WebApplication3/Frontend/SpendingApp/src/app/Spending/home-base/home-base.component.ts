@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SubUserService } from 'src/app/shared/subuser.service';
 
 @Component({
   selector: 'app-home-base',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeBaseComponent implements OnInit {
 
-  constructor() { }
+  constructor( public subUserService: SubUserService,) { }
 
   ngOnInit(): void {
   }

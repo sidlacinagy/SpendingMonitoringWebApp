@@ -44,6 +44,42 @@ export class HttpHandlerService {
     );
   }
 
+  renameSubUser(data:any){
+    return this.http
+    .post<String>(
+      'https://localhost:7098/api/subuser/rename',
+      this.asFormData(data),
+      {withCredentials:true}
+    );
+  }
+
+  deleteSubUser(data:any){
+    return this.http
+    .post<String>(
+      'https://localhost:7098/api/subuser/delete',
+      this.asFormData(data),
+      {withCredentials:true}
+    );
+  }
+
+  removeSubUser(data:any){
+    return this.http
+    .post<String>(
+      'https://localhost:7098/api/subuser/remove',
+      this.asFormData(data),
+      {withCredentials:true}
+    );
+  }
+
+  addSubUser(data:any){
+    return this.http
+    .post<String>(
+      'https://localhost:7098/api/subuser/add',
+      this.asFormData(data),
+      {withCredentials:true}
+    );
+  }
+
   register(data:any){
     return this.http
     .post<String>(
