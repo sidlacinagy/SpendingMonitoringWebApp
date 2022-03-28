@@ -31,7 +31,10 @@ namespace WebApplication3.Services
 
         public void DeleteSubUserByID(String subUserID)
         {
-            SubUser? subuser= _dbContext.Find<SubUser>(subUserID);
+            SubUser? subuser= _dbContext.SubUser
+                       .Where(b => b.subUserId.Equals(subUserID))
+                       .Include(e => e.Spendings)
+                       .FirstOrDefault();
             if (subuser == null)
             {
                 throw new Exception("Subuser does not exist");

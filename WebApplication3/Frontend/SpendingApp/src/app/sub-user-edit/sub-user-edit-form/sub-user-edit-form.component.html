@@ -1,4 +1,13 @@
-<div>{{errormsg}}</div>
-<input type="text" [(ngModel)]="renamedUserName">
-<button class="btn btn-primary" (click)="renameSubUser()">Rename</button>
-<button class="btn btn-danger" (click)="deleteSubUser()">Delete</button>
+<div class="col-3"></div>
+<div class="col-3"><input class="inputField" type="text" [(ngModel)]="renamedUserName"></div>
+<div class="col-2"><button class="btn btn-primary" (click)="renameSubUser()">Rename</button></div>
+<div class="col-2"><button class="btn btn-danger" (click)="openModal(confirm)">Delete</button></div>
+<ng-template #confirm let-modal>
+    <div class="modal-body">
+        <h2 class="text-center">Are you sure you want to delete subuser "{{subuser.name}}"?</h2>
+        <div class="row align-content-between justify-content-center">
+            <button type="button" class="btn btn-outline-dark w-25 m-3" (click)="modal.close();deleteSubUser()">Yes</button>
+            <button type="button" class="btn btn-outline-dark w-25 m-3" (click)="modal.close()">No</button>
+        </div>
+    </div>
+</ng-template>

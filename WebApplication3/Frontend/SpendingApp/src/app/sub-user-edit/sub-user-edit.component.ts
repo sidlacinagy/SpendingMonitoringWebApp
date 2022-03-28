@@ -1,3 +1,4 @@
+import { trigger, transition, style, animate } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { HttpHandlerService } from '../shared/http-handler.service';
@@ -6,7 +7,7 @@ import { SubUserService } from '../shared/subuser.service';
 @Component({
   selector: 'app-sub-user-edit',
   templateUrl: './sub-user-edit.component.html',
-  styleUrls: ['./sub-user-edit.component.scss']
+  styleUrls: ['./sub-user-edit.component.scss'],
 })
 export class SubUserEditComponent implements OnInit {
 
@@ -22,11 +23,17 @@ export class SubUserEditComponent implements OnInit {
     });
     this.httpHandlerService.addSubUser(subUserData.value).subscribe({
       next: () => {this.subUserService.getAllSubUsersFromServer();
-      this.newUserName=""},
-      error: (e) => { this.errormsg = e.message; }
+      this.showResult("Successfully added new subuser: "+this.newUserName);
+      this.newUserName="";},
+      error: (e) => { this.showResult(e.message);}
     })
   }
 
+  showResult(msg:string){
+    this.errormsg=msg;
+    setTimeout( () => {
+      this.errormsg = "";
+    }, 4000);
 
-
+  }
 }

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DeleteSpendingComponent } from './delete-spending.component';
+import { EditSpendingComponent } from './edit-spending.component';
 
-describe('DeleteSpendingComponent', () => {
-  let component: DeleteSpendingComponent;
-  let fixture: ComponentFixture<DeleteSpendingComponent>;
+describe('EditSpendingComponent', () => {
+  let component: EditSpendingComponent;
+  let fixture: ComponentFixture<EditSpendingComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DeleteSpendingComponent ]
+      declarations: [ EditSpendingComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeleteSpendingComponent);
+    fixture = TestBed.createComponent(EditSpendingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

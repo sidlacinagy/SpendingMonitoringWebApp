@@ -18,11 +18,8 @@ namespace WebApplication3.Controllers
     public class SpendingController : Controller
     {
 
-
-
         private readonly SpendingService _spendingService;
         private IConfiguration _config;
-
 
         public SpendingController(SpendingAppDbContext context, IConfiguration configuration)
         {
@@ -38,9 +35,8 @@ namespace WebApplication3.Controllers
         public IActionResult AddSpending([FromForm] String product, [FromForm] String productCategory, [FromForm] int price,
             [FromForm] String date, [FromForm] String subuserid)
         {
-            
-
-            DateTime dateTime = DateTime.Parse(date);
+ 
+            DateTime dateTime = DateTime.Parse(date).AddHours(6);
             var subUsersString = User.FindFirst("subusers")?.Value;
             String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);
             if (!subusers.Contains(subuserid))
@@ -54,11 +50,32 @@ namespace WebApplication3.Controllers
             }
             catch (Exception e)
             {
+                System.Console.WriteLine(e.Message);
                 return StatusCode(400, JsonSerializer.Serialize(e.Message));
             }
 
         }
 
+        [Authorize(Policy = "subusers")]
+        [HttpPost("get-categories")]
+        public IActionResult GetCategories([FromForm] String subuserid)
+        {
+            var subUsersString = User.FindFirst("subusers")?.Value;
+            String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);
+            if (!subusers.Contains(subuserid))
+            {
+                return StatusCode(403, JsonSerializer.Serialize("Invalid subuserid"));
+            }
+            try
+            { 
+                return StatusCode(200, JsonSerializer.Serialize(_spendingService.GetCategories(subuserid)));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, JsonSerializer.Serialize(e.Message));
+            }
+
+        }
 
         [Authorize(Policy = "subusers")]
         [HttpPost("update")]
@@ -66,7 +83,7 @@ namespace WebApplication3.Controllers
             [FromForm] String date, [FromForm] String spendingId)
         {
 
-            DateTime dateTime = DateTime.Parse(HttpContext.Request.Form["date"]);
+            DateTime dateTime = DateTime.Parse(date);
             var email = User.FindFirst("email")?.Value;
             try
             {
@@ -81,7 +98,7 @@ namespace WebApplication3.Controllers
         }
 
         [Authorize(Policy = "subusers")]
-        [HttpPost("remove")]
+        [HttpPost("delete")]
         public IActionResult RemoveSpending([FromForm] String spendingId)
         {
             var email = User.FindFirst("email")?.Value;
@@ -109,6 +126,40 @@ namespace WebApplication3.Controllers
             }
 
             return StatusCode(200, JsonSerializer.Serialize(_spendingService.GetAllSpendingBySubUser(subUserId)));
+
+        }
+
+        [Authorize(Policy = "subusers")]
+        [HttpPost("get-spending-query")]
+        public IActionResult GetSubUserSpendingByQuery([FromForm] String subuserid, [FromForm] String mindate, [FromForm] String maxdate,
+            [FromForm] int minprice, [FromForm] int maxprice, [FromForm] List<String> categories, [FromForm] int page,[FromForm] String orderby)
+        {
+            DateTime mindateTime = DateTime.Parse(mindate);
+            DateTime maxdateTime = DateTime.Parse(maxdate);
+            var subUsersString = User.FindFirst("subusers")?.Value;
+            String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);
+            if (!subusers.Contains(subuserid))
+            {
+                return StatusCode(400, JsonSerializer.Serialize("Invalid subuser"));
+            }
+
+            return StatusCode(200, JsonSerializer.Serialize(_spendingService.GetAllSpendingByQuery(subuserid,mindateTime,maxdateTime,minprice,
+                maxprice,categories,page,orderby)));
+
+        }
+
+        [Authorize(Policy = "subusers")]
+        [HttpPost("get-spending")]
+        public IActionResult GetSubUserSpendingByQuery([FromForm] String subuserid, [FromForm] int page)
+        {
+            var subUsersString = User.FindFirst("subusers")?.Value;
+            String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);
+            if (subusers.Contains(subuserid))
+            {
+                return StatusCode(400, JsonSerializer.Serialize("Invalid subuser"));
+            }
+
+            return StatusCode(200, JsonSerializer.Serialize(_spendingService.GetAllSpendingBySubUserAndPage(subuserid, page)));
 
         }
 

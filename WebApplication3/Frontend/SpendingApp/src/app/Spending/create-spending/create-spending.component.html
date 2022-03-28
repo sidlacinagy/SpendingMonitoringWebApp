@@ -1,1 +1,35 @@
-<p>create-spending works!</p>
+<div id="body">
+    <div class="justify-content-center d-flex flex-column align-items-center">
+        <h2 class="text-center animated fadeIn" style="height:2em;">{{errormsg}}</h2>
+        <div class="card w-50 h-auto d-block">
+            <div class="card-body">
+                <h5 class="card-title">Create new spending</h5>
+                <form [formGroup]="spendingData">
+                    <input [class.is-invalid]="productData?.invalid && productData?.touched" type="text" class="form-control mt-2" formControlName="product" aria-describedby="productHelp" placeholder="Product's name" style="background-color:#f9f7fdd3" required>
+                    <select [class.is-invalid]="productCategoryData?.invalid && productCategoryData?.touched" class="form-control mt-2" formControlName="productCategory" aria-describedby="productHelp" style="background-color:#f9f7fdd3" required>
+                        <option selected disabled hidden value="">Select product category</option>
+                        <option *ngFor="let category of  this.recommendedCategories" [value]="category">{{category}}</option>
+                    </select>
+                    <input [class.is-invalid]="priceData?.invalid && priceData?.touched" type="text" class="form-control mt-2" formControlName="price" aria-describedby="productHelp" placeholder="Price (in HUF)" style="background-color:#f9f7fdd3" required>
+                    <input [class.is-invalid]="dateData?.invalid && dateData?.touched" type="date" class="form-control mt-2" formControlName="date" aria-describedby="productHelp" placeholder="Date" style="background-color:#f9f7fdd3" required>
+                </form>
+                <div class="row align-content-between justify-content-around">
+                    <button (click)="createSpending()" class="btn btn-primary mt-3 text-center" style="width:20%">Create new spending</button>
+                    <button (click)="openModal(addcategory)" class="btn btn-primary mt-3 text-center" style="width:20%">Add new category</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #addcategory let-modal>
+    <div class="modal-body">
+        <h2 class="text-center">Add new category</h2>
+        <div class="row">
+            <input type="text" [(ngModel)]="newCategory">
+        </div>
+        <div class="row align-content-between justify-content-center">
+            <button type="button" class="btn btn-outline-dark w-25 m-3" (click)="modal.close();addCategory()">Add</button>
+            <button type="button" class="btn btn-outline-dark w-25 m-3" (click)="modal.close()">Cancel</button>
+        </div>
+    </div>
+</ng-template>

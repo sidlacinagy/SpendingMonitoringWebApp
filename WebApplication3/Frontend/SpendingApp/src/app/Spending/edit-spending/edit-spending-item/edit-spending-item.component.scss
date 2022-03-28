@@ -1,14 +1,3 @@
-.inputField {
-    background-color: rgb(251, 224, 251);
-    border: 2px solid rgb(223, 196, 223);
-    border-radius: 4px;
-}
-
-.inputField:focus-visible {
-    border: 2px solid rgb(235, 209, 235);
-    outline: rgb(228, 211, 228) solid 4px;
-}
-
 .btn {
     background-color: rgb(251, 224, 251);
     border: 2px solid rgb(223, 196, 223);
@@ -20,4 +9,8 @@
     background-color: rgb(134, 77, 134);
     border: 2px solid rgb(105, 57, 105);
     color: white;
+}
+
+.inputField {
+    font-size: 100%;
 }

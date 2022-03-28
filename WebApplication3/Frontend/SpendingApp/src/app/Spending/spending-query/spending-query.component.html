@@ -1,0 +1,55 @@
+<div>
+    <h2 *ngIf="errormsg" class="text-center p-3">{{errormsg}}</h2>
+    <div class="card h-auto">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+            <h2 class="card-title">Search</h2>
+            <form [formGroup]="queryData" formArrayName="categories" style="width:90%">
+                <div class="d-flex justify-content-center flex-wrap">
+                    <div class="query-input">
+                        <label for="minprice" class="form-label mb-0">Min price</label>
+                        <input [class.is-invalid]="minPriceData?.invalid && minPriceData?.touched" type="text" id="minprice" class="form-control mt-2" formControlName="minprice" aria-describedby="productHelp" placeholder="Min Price (in HUF)" style="background-color:#f9f7fdd3">
+                    </div>
+                    <div class="query-input">
+                        <label for="minprice" class="form-label mb-0">Max price</label>
+                        <input [class.is-invalid]="maxPriceData?.invalid && maxPriceData?.touched" type="text" id="maxprice" class="form-control mt-2" formControlName="maxprice" aria-describedby="productHelp" placeholder="Max Price (in HUF)" style="background-color:#f9f7fdd3">
+                    </div>
+                    <div class="query-input">
+                        <label for="mindate" class="form-label mb-0">Min date</label>
+                        <input type="date" id="mindate" class="form-control mt-2" formControlName="mindate" aria-describedby="productHelp" placeholder="Date" style="background-color:#f9f7fdd3">
+                    </div>
+                    <div class="query-input">
+                        <label for="maxdate" class="form-label mb-0">Max date</label>
+                        <input type="date" id="maxdate" class="form-control mt-2" formControlName="maxdate" aria-describedby="productHelp" placeholder="Date" style="background-color:#f9f7fdd3">
+                    </div>
+                    <div class="query-input">
+                        <label for="orderby" class="form-label mb-0">Sort by</label>
+                        <select class="form-control mt-2" id="orderby" formControlName="orderby" aria-describedby="productHelp" style="background-color:#f9f7fdd3">
+                            <option selected disabled hidden value="">Select sorting</option>
+                            <option value="category">Category</option>
+                            <option value="date">Date</option>
+                            <option value="price">Price</option>
+                        </select>
+                    </div>
+                    <div *ngFor="let queryCategory of categoriesFormControls; index as i" class="query-input">
+                        <label [for]="'category'+i" class="form-label mb-0">Category {{i+1}}</label>
+                        <div class="row">
+                            <div class="col-10">
+                                <select class="form-control mt-2" [id]="'category'+i" [formControl]="$any(queryCategory)" aria-describedby="productHelp" style="background-color:#f9f7fdd3;">
+                                    <option selected disabled hidden value="">Select category</option>
+                                    <option *ngFor="let category of  this.recommendedCategories" [value]="category">{{category}}</option>
+                                </select>
+                            </div>
+                            <div class="col-2 ps-0">
+                                <button (click)="deleteCategoryField(i)" class="btn btn-danger mt-2" style="font-size:50%">X</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center align-items-center">
+                    <button (click)="addNewCategoryField()" class="btn btn-primary m-5 mt-3 mb-2 text-center" style="min-width:15%;max-width:25%;">Add category filter</button>
+                    <button (click)="submitQuery()" class="btn btn-primary m-5 mt-3 mb-2 text-center" style="min-width:15%;max-width:25%;">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

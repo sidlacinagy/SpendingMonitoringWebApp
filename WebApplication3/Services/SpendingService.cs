@@ -40,7 +40,22 @@ namespace WebApplication3.Services
             _dbContext.SaveChanges();
         }
 
-        
+        public String[] GetCategories(String subuserid)
+        {
+           
+            List<String> categories = _dbContext.Spending
+                          .Where(e => e.subUser.subUserId==subuserid)
+                         .GroupBy(e => e.productCategory)
+                         .Select(grp => grp.First().productCategory)
+                         .ToList();
+            categories.Add("Food");
+            categories.Add("Clothing");
+            categories.Add("Fuel");
+
+            return categories.Distinct().ToArray();
+        }
+
+
         public void UpdateSpendingById(String email, String id, String product, String productCategory, int price, DateTime date)
         {
 
@@ -86,6 +101,64 @@ namespace WebApplication3.Services
                          .ToArray();
             return spendings;
 
+        }
+
+        public Spending[] GetAllSpendingBySubUserAndPage(String subuserid, int page)
+        {
+            int numberOfSpendingsReturned = 50;
+            int startIndex = (page - 1) * numberOfSpendingsReturned;
+            Spending[] spendings = _dbContext.Spending
+                         .OrderBy(b => b.date)
+                         .Skip(startIndex)
+                         .Take(numberOfSpendingsReturned)
+                         .ToArray();
+            return spendings;
+        }
+
+        public Spending[] GetAllSpendingByQuery(String subuserid, DateTime mindate, DateTime maxdate,
+            int minprice, int maxprice, List<String> categories,int page, String orderby)
+        {
+            int numberOfSpendingsReturned = 30;
+            int startIndex = (page - 1) * numberOfSpendingsReturned;
+            Func<Spending, object> orderByFunction= b => b.date;
+            switch (orderby.ToLower())
+            {
+                case "price":
+                    orderByFunction = b => b.price;
+                    break;
+                case "date":
+                    orderByFunction = b => b.date;
+                    break;
+                case "category":
+                    orderByFunction = b => b.productCategory;
+                    break;
+                default:
+                    orderByFunction = b => b.date;
+                    break;
+            }
+            Spending[] spendings = new Spending[] {};
+            if (categories.Count > 0) {
+                          spendings = _dbContext.Spending
+                         .Where(b =>(b.date>=mindate && b.date<=maxdate && 
+                          categories.Contains(b.productCategory) && 
+                          b.price>minprice && b.price<maxprice && b.subUser.subUserId==subuserid))
+                         .OrderBy(orderByFunction)
+                         .Skip(startIndex)
+                         .Take(numberOfSpendingsReturned)
+                         .ToArray(); 
+            }
+            else
+            {
+                          spendings = _dbContext.Spending
+                         .Where(b => (b.date > mindate && b.date < maxdate &&
+                          b.price > minprice && b.price < maxprice && b.subUser.subUserId == subuserid))
+                         .OrderBy(orderByFunction)
+                         .Skip(startIndex)
+                         .Take(numberOfSpendingsReturned)
+                         .ToArray();
+            }
+            
+            return spendings;
         }
 
     }

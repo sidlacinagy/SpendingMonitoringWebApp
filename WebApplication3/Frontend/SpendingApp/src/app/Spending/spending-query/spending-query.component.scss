@@ -1,12 +1,6 @@
-.inputField {
-    background-color: rgb(251, 224, 251);
-    border: 2px solid rgb(223, 196, 223);
-    border-radius: 4px;
-}
-
-.inputField:focus-visible {
-    border: 2px solid rgb(235, 209, 235);
-    outline: rgb(228, 211, 228) solid 4px;
+.query-input {
+    min-width: 25%;
+    padding: 0.3em 1em;
 }
 
 .btn {

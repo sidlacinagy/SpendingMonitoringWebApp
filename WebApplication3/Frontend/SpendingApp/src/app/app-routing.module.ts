@@ -6,7 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
 import { CreateSpendingComponent } from './Spending/create-spending/create-spending.component';
-import { DeleteSpendingComponent } from './Spending/delete-spending/delete-spending.component';
+import { EditSpendingComponent } from './Spending/edit-spending/edit-spending.component';
 import { HomeBaseComponent } from './Spending/home-base/home-base.component';
 import { ViewSpendingComponent } from './Spending/view-spending/view-spending.component';
 import { SubUserEditComponent } from './sub-user-edit/sub-user-edit.component';
@@ -29,8 +29,8 @@ const routes: Routes = [
       component: CreateSpendingComponent, 
     },
     {
-      path: 'delete', 
-      component: DeleteSpendingComponent, 
+      path: 'edit', 
+      component: EditSpendingComponent, 
     },
     { 
       path: 'subusers', 

@@ -25,3 +25,37 @@
 a:hover {
     cursor: pointer;
 }
+
+.navEdit {
+    background-color: rgb(230, 173, 235);
+}
+
+.navUser {
+    background-color: rgb(210, 173, 235);
+}
+
+.navLogout {
+    background-color: rgb(190, 173, 235);
+}
+
+.nav-subuser:hover {
+    background-color: rgb(56, 46, 58) !important;
+    color: white !important;
+}
+
+.dropdown-menu {
+    padding: 0 !important;
+}
+
+.btn {
+    background-color: rgb(251, 224, 251);
+    border: 2px solid rgb(223, 196, 223);
+    color: black;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background-color: rgb(134, 77, 134);
+    border: 2px solid rgb(105, 57, 105);
+    color: white;
+}

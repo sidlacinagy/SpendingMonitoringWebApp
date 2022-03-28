@@ -6,20 +6,18 @@ export class SubUserService {
   constructor(private httpHandlerService: HttpHandlerService) {}
   
   public subusers: SubUser[] = [];
-  public currentSubUser?: SubUser = undefined;
+  public currentSubUser: SubUser = new SubUser("","");
+
   getAllSubUsersFromServer() {
   this.httpHandlerService.getSubUsers().subscribe({
     next: (data) => {
       this.setSubUsersFromData(data);
-      if (this.currentSubUser == undefined && this.subusers.length != 0) {
-        this.currentSubUser = this.subusers[0];
-      }
     },
     error: () => { }
   })
 }
 
-  private setSubUsersFromData(data: Array<any>){
+  public setSubUsersFromData(data: Array<any>){
   let subusers: SubUser[] = [];
   data.forEach(element => {
     let subUser = new SubUser(element.subUserName, element.subUserId);

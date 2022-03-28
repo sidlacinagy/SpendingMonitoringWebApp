@@ -17,11 +17,13 @@ import { ForgotpasswordComponent } from './forgotpassword/forgotpassword.compone
 import { VerifyComponent } from './verify/verify.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ViewSpendingComponent } from './Spending/view-spending/view-spending.component';
-import { DeleteSpendingComponent } from './Spending/delete-spending/delete-spending.component';
 import { CreateSpendingComponent } from './Spending/create-spending/create-spending.component';
 import { HomeBaseComponent } from './Spending/home-base/home-base.component';
 import { SubUserEditComponent } from './sub-user-edit/sub-user-edit.component';
 import { SubUserEditFormComponent } from './sub-user-edit/sub-user-edit-form/sub-user-edit-form.component';
+import { EditSpendingComponent } from './Spending/edit-spending/edit-spending.component';
+import { SpendingQueryComponent } from './Spending/spending-query/spending-query.component';
+import { EditSpendingItemComponent } from './Spending/edit-spending/edit-spending-item/edit-spending-item.component';
 
 @NgModule({
   declarations: [
@@ -36,11 +38,13 @@ import { SubUserEditFormComponent } from './sub-user-edit/sub-user-edit-form/sub
     VerifyComponent,
     NavbarComponent,
     ViewSpendingComponent,
-    DeleteSpendingComponent,
     CreateSpendingComponent,
     HomeBaseComponent,
     SubUserEditComponent,
     SubUserEditFormComponent,
+    EditSpendingComponent,
+    SpendingQueryComponent,
+    EditSpendingItemComponent,
   ],
   imports: [
     BrowserModule,

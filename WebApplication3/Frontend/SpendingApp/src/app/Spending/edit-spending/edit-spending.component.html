@@ -1,0 +1,33 @@
+<div id="body" class="d-flex flex-column align-items-center">
+    <div style="width:85%">
+        <app-spending-query (newQueryEvent)="submitNewQuery($event)"></app-spending-query>
+    </div>
+    <div class="row text-center mt-5" style="width:95%">
+        <div class="col-3">
+            Product name
+        </div>
+        <div class="col-2">
+            Product category
+        </div>
+        <div class="col-2">
+            Price
+        </div>
+        <div class="col-2">
+            Date
+        </div>
+        <div class="col-3"></div>
+    </div>
+    <hr>
+    <div class="table text-center">
+        <div class="table table-hover table-striped overflow-hidden">
+            <div class="d-flex justify-content-center align-items-center" *ngFor="let spending of this.presentPageSpendings">
+                <app-edit-spending-item (newItemEvent)="refreshSpendings($event)" class="row justify-content-center align-items-center p-0 m-0" style="width:100%; word-wrap:normal;" [spending]="spending" [recommendedCategories]="recommendedCategories"></app-edit-spending-item>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+        <button class="btn btn-primary m-3" style="width:7em" *ngIf="this.currentpage!=1" (click)="this.switchToPrevious()">Previous</button>
+        <span class="m-3">{{this.currentpage}}</span>
+        <button class="btn btn-primary m-3" style="width:7em" *ngIf="this.nextPageSpendings.length > 0" (click)="this.switchToNext()">Next</button>
+    </div>
+</div>

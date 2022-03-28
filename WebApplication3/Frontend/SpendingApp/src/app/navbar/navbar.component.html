@@ -14,7 +14,7 @@
                     <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['add']">Add</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['delete']">Delete</a>
+                    <a class="nav-link" [routerLinkActive]="['active']" [routerLink]="['edit']">Edit</a>
                 </li>
             </ul>
             <!-- <ul class="navbar-nav" style="position: absolute;
@@ -26,17 +26,41 @@
                 </li>
             </ul> -->
             <ul class="navbar-nav ms-auto me-3">
+                <li class="nav-item">
+                    <div class="nav-link">Current user: {{this.subUserService.currentSubUser?.name}}</div>
+                </li>
                 <li class="nav-item dropdown float-end">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Manage users</a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li [routerLink]="['subusers']"><a class="dropdown-item">Edit subusers</a></li>
-                        <li *ngFor="let subuser of this.subUserService.subusers" (click)="switchUser(subuser)">
-                            <a class="dropdown-item">{{subuser.name}}</a>
+                        <li [routerLink]="['subusers']" class="navEdit"><a class="dropdown-item nav-subuser">Edit subusers</a></li>
+                        <li class="navUser" *ngFor="let subuser of this.subUserService.subusers" (click)="switchUser(subuser)">
+                            <a *ngIf="subuser.id!=this.subUserService.currentSubUser.id" class="dropdown-item nav-subuser">{{subuser.name}}</a>
                         </li>
-                        <li (click)="logout()"><a class="dropdown-item">Log out</a></li>
+                        <li (click)="logout()" class="navLogout"><a class="dropdown-item nav-subuser">Log out</a></li>
                     </ul>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+
+<ng-template #createsubuser let-modal>
+    <div class="modal-body">
+        <h2 class="text-center">Create first subuser</h2>
+        <div class="row">
+            <input type="text" [(ngModel)]="subusername">
+        </div>
+        <div class="row align-content-between justify-content-center">
+            <button type="button" class="btn btn-outline-dark w-25 m-3" (click)="modal.close();addSubuser()">Add</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #selectsubuser let-modal>
+    <div class="modal-body">
+        <h2 class="text-center">Select subuser</h2>
+        <div class="d-flex justify-content-center align-items-center flex-wrap">
+            <button type="button" *ngFor="let subuser of this.subUserService.subusers" class="btn btn-outline-dark m-3 w-25" (click)="modal.close();switchUser(subuser)">{{subuser.name}}</button>
+        </div>
+    </div>
+</ng-template>
