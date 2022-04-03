@@ -1,2 +1,78 @@
-<p>home-base works!</p>
-<div>{{this.subUserService.currentSubUser?.name}}</div>
+<div id="body">
+    <h1 class="text-center mb-5" style="font-size:200%">Welcome back {{this.subUserService.currentSubUser?.name}}!</h1>
+    <div class="row text-center mt-5">
+        <div class="col-4">View statistics, and filter them</div>
+        <div class="col-4">Add a spending for yourself</div>
+        <div class="col-4">Edit spendings of yours</div>
+    </div>
+    <div class="row text-center">
+        <div class="col-4"><button class="btn" [routerLink]="['view']">View</button></div>
+        <div class="col-4"><button class="btn" [routerLink]="['add']">Add</button></div>
+        <div class="col-4"><button class="btn" [routerLink]="['edit']">Edit</button></div>
+    </div>
+
+    <div class="d-flex justify-content-center mt-5">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <div class="row">
+                <div *ngIf="isOnlySubuser" class="text-center">Currently viewing only your statistics</div>
+                <div *ngIf="!isOnlySubuser" class="text-center">Currently viewing all statistics</div>
+                <div class="text-center">These statistics are from the last 30 days</div>
+            </div>
+        </div>
+        <div class="col-4 text-end"><button *ngIf="!isOnlySubuser" (click)="switchToSubUserQuery()" class="btn btn-switch me-5">Switch to view only your statistics</button>
+            <button *ngIf="isOnlySubuser" (click)="switchToUserQuery()" class="btn btn-switch me-5 ">Switch to everyone's statistics</button></div>
+    </div>
+    <div class="row" style="margin-top:4em;font-size:150%">
+        <div class="col-4" *ngIf="statisticsSortedByPrice[0] !== undefined">
+            <div class="d-flex justify-content-center">
+                1st most spent on:
+            </div>
+            <div class="d-flex justify-content-center">
+                {{statisticsSortedByPrice[0].key}}: {{numberWithCommas(statisticsSortedByPrice[0].sum)}}
+            </div>
+        </div>
+        <div class="col-4" *ngIf="statisticsSortedByPrice[1] !== undefined">
+            <div class="d-flex justify-content-center">
+                2nd most spent on:
+            </div>
+            <div class="d-flex justify-content-center">
+                {{statisticsSortedByPrice[1].key}}: {{numberWithCommas(statisticsSortedByPrice[1].sum)}}
+            </div>
+        </div>
+        <div class="col-4" *ngIf="statisticsSortedByPrice[2] !== undefined">
+            <div class="d-flex justify-content-center">
+                3rd most spent on:
+            </div>
+            <div class="d-flex justify-content-center">
+                {{statisticsSortedByPrice[2].key}}: {{numberWithCommas(statisticsSortedByPrice[2].sum)}}
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5" style="font-size:150%">
+        <div class="col-4" *ngIf="statisticsSortedByCount[0] !== undefined">
+            <div class="d-flex justify-content-center">
+                1st by count:
+            </div>
+            <div class="d-flex justify-content-center">
+                {{statisticsSortedByCount[0].key}}: {{statisticsSortedByCount[0].count}}
+            </div>
+        </div>
+        <div class="col-4" *ngIf="statisticsSortedByCount[1] !== undefined">
+            <div class="d-flex justify-content-center">
+                2nd by count:
+            </div>
+            <div class="d-flex justify-content-center">
+                {{statisticsSortedByCount[1].key}}: {{statisticsSortedByCount[1].count}}
+            </div>
+        </div>
+        <div class="col-4" *ngIf="statisticsSortedByCount[2] !== undefined">
+            <div class="d-flex justify-content-center">
+                3rd by count:
+            </div>
+            <div class="d-flex justify-content-center">
+                {{statisticsSortedByCount[2].key}}: {{statisticsSortedByCount[2].count}}
+            </div>
+        </div>
+    </div>
+</div>

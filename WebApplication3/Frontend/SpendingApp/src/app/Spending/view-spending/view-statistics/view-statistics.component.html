@@ -1,0 +1,13 @@
+<div class="d-flex justify-content-center align-items-center text-center flex-column">
+    <div class="row justify-content-center align-items-center text-center" style="height:5em; width:100%">
+        <div class="col-4">Key</div>
+        <div class="col-4">Sum of spent money</div>
+        <div class="col-4">Count of spendings</div>
+    </div>
+    <div *ngFor="let statistic of this.statistics" class="row justify-content-center align-items-center text-center" style="height:2em;width:100%">
+        <div class="col-4">{{statistic.key}}</div>
+        <div class="col-4">{{numberWithCommas(statistic.sum)}}</div>
+        <div class="col-4">{{numberWithCommas(statistic.count)}}</div>
+        <hr>
+    </div>
+</div>

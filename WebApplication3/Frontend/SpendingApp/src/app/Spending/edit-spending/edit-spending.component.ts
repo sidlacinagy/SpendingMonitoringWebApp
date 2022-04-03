@@ -75,14 +75,14 @@ export class EditSpendingComponent implements OnInit {
       this.httpHandlerService.getSpendingByQuery(this.queryData).subscribe({
         next: (data) => {
           this.presentPageSpendings=this.getSpendingArrayFromData(data);
-        },
-        error: (e) => { 
-          this.errormsg = "Error loading spending";}
-      });
-      this.queryData["page"]=this.currentpage+1;
-      this.httpHandlerService.getSpendingByQuery(this.queryData).subscribe({
-        next: (data) => {
-          this.nextPageSpendings=this.getSpendingArrayFromData(data);
+          this.queryData["page"]=this.currentpage+1;
+          this.httpHandlerService.getSpendingByQuery(this.queryData).subscribe({
+            next: (data) => {
+              this.nextPageSpendings=this.getSpendingArrayFromData(data);
+            },
+            error: (e) => { 
+              this.errormsg = "Error loading spending";}
+          });
         },
         error: (e) => { 
           this.errormsg = "Error loading spending";}

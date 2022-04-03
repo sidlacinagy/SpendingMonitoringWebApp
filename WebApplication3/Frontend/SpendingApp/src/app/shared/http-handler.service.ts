@@ -128,6 +128,15 @@ export class HttpHandlerService {
     );
   }
 
+  getSpendingStatisticsByQuery(data:any){
+    return this.http
+    .post<Array<any>>(
+      'https://localhost:7098/api/spending/get-spendingstatistic-query',
+      this.asFormData(data),
+      {withCredentials:true}
+    );
+  }
+
   addSubUser(data:any){
     return this.http
     .post<String>(

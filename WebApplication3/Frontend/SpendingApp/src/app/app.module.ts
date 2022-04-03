@@ -24,6 +24,8 @@ import { SubUserEditFormComponent } from './sub-user-edit/sub-user-edit-form/sub
 import { EditSpendingComponent } from './Spending/edit-spending/edit-spending.component';
 import { SpendingQueryComponent } from './Spending/spending-query/spending-query.component';
 import { EditSpendingItemComponent } from './Spending/edit-spending/edit-spending-item/edit-spending-item.component';
+import { ViewStatisticsComponent } from './Spending/view-spending/view-statistics/view-statistics.component';
+
 
 @NgModule({
   declarations: [
@@ -45,6 +47,7 @@ import { EditSpendingItemComponent } from './Spending/edit-spending/edit-spendin
     EditSpendingComponent,
     SpendingQueryComponent,
     EditSpendingItemComponent,
+    ViewStatisticsComponent,
   ],
   imports: [
     BrowserModule,

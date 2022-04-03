@@ -1,1 +1,29 @@
-<p>view-spending works!</p>
+<div id="body">
+    <h2 *ngIf="errormsg">{{errormsg}}</h2>
+    <div class="d-flex justify-content-around align-items-center text-center">
+        <app-spending-query style="width:48%; display:block" (newQueryEvent)="submitNewQuery1($event)" [isSubUserQuery]="true"></app-spending-query>
+        <app-spending-query style="width:48%;display:block" (newQueryEvent)="submitNewQuery2($event)" [isSubUserQuery]="true"></app-spending-query>
+    </div>
+    <div class="d-flex justify-content-around  text-center mt-4">
+        <app-view-statistics style="width:40%; display:block" [statistics]="statistics1"></app-view-statistics>
+        <div *ngIf="isComperable" style="width:20%; display:block">
+            <div class="d-flex justify-content-center align-items-center text-center flex-column">
+                <div style="height:5em; width:100%" class="row justify-content-center align-items-center text-center">
+                    <div class="col-6">Diff of sum</div>
+                    <div class="col-6">Diff of count</div>
+                </div>
+                <div *ngFor="let statistic of statistics1; index as i" class="row justify-content-center align-items-center text-center" style="width:100%;height:2em;">
+                    <div class="col-6 text-center" [ngClass]="{
+                        'redtext': statistics1[i].sum-statistics2[i].sum>0,
+                        'greentext': statistics1[i].sum-statistics2[i].sum<0
+                      }">{{numberWithCommas(statistics1[i].sum-statistics2[i].sum)}}</div>
+                    <div class="col-6 text-center" [ngClass]="{
+                        'redtext': statistics1[i].count-statistics2[i].count>0,
+                        'greentext': statistics1[i].count-statistics2[i].count<0
+                      }">{{numberWithCommas(statistics1[i].count-statistics2[i].count)}}</div>
+                </div>
+            </div>
+        </div>
+        <app-view-statistics style="width:40%; display:block" [statistics]="statistics2"></app-view-statistics>
+    </div>
+</div>

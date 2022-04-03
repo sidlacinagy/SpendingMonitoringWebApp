@@ -1,0 +1,24 @@
+#body {
+    min-height: 70vh;
+    background-image: linear-gradient(rgb(254, 239, 255), rgb(255, 255, 255));
+    padding-top: 1em;
+    font-size: 150%;
+}
+
+.btn {
+    background-color: rgb(251, 224, 251);
+    border: 2px solid rgb(223, 196, 223);
+    color: black;
+    transition: 0.3s;
+    width: 8em;
+}
+
+.btn:hover {
+    background-color: rgb(134, 77, 134);
+    border: 2px solid rgb(105, 57, 105);
+    color: white;
+}
+
+.btn-switch {
+    width: fit-content;
+}

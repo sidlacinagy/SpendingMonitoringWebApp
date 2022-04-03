@@ -22,7 +22,7 @@ namespace WebApplication3.Services
             {
                 throw new Exception("No subuser with given id");
             }
-            Spending spending = new Spending(subUser,product,productCategory,price,date);
+            Spending spending = new Spending(subUser,product,productCategory,price,date);   
             _dbContext.Add<Spending>(spending);
             _dbContext.SaveChanges();
         }
@@ -141,8 +141,8 @@ namespace WebApplication3.Services
                           spendings = _dbContext.Spending
                          .Where(b =>(b.date>=mindate && b.date<=maxdate && 
                           categories.Contains(b.productCategory) && 
-                          b.price>minprice && b.price<maxprice && b.subUser.subUserId==subuserid))
-                         .OrderBy(orderByFunction)
+                          b.price>=minprice && b.price<=maxprice && b.subUser.subUserId==subuserid))
+                         .OrderByDescending(orderByFunction)
                          .Skip(startIndex)
                          .Take(numberOfSpendingsReturned)
                          .ToArray(); 
@@ -150,15 +150,60 @@ namespace WebApplication3.Services
             else
             {
                           spendings = _dbContext.Spending
-                         .Where(b => (b.date > mindate && b.date < maxdate &&
-                          b.price > minprice && b.price < maxprice && b.subUser.subUserId == subuserid))
-                         .OrderBy(orderByFunction)
+                         .Where(b => (b.date >= mindate && b.date <= maxdate &&
+                          b.price >= minprice && b.price <= maxprice && b.subUser.subUserId == subuserid))
+                         .OrderByDescending(orderByFunction)
                          .Skip(startIndex)
                          .Take(numberOfSpendingsReturned)
                          .ToArray();
             }
             
             return spendings;
+        }
+        
+
+        public StatisticsModel[] GetAllSpendingStatisticsByQuery(List<String> subusers, DateTime mindate, DateTime maxdate,
+            int minprice, int maxprice, List<String> categories, String groupby)
+        {
+
+            Func<Spending, object> groupByFunction = b => b.productCategory;
+            switch (groupby.ToLower())
+            {
+                case "price":
+                    groupByFunction = b => Math.Floor(Math.Log(b.price,10));
+                    break;
+                case "date":
+                    groupByFunction = b => new { b.date.Year, b.date.Month};
+                    break;
+                case "category":
+                    groupByFunction = b => b.productCategory;
+                    break;
+                default:
+                    groupByFunction = b => b.productCategory;
+                    break;
+            }
+            StatisticsModel[] spendingsStatistic = new StatisticsModel[] { };
+            if (categories.Count > 0)
+            {
+                spendingsStatistic = _dbContext.Spending
+               .Where(b => (b.date >= mindate && b.date <= maxdate &&
+                categories.Contains(b.productCategory) &&
+                b.price >= minprice && b.price <= maxprice && subusers.Contains(b.subUser.subUserId)))
+               .GroupBy(groupByFunction)
+               .Select(group => new StatisticsModel(group.Key, group.Sum(p => p.price), group.Count()))
+               .ToArray();
+            }
+            else
+            {
+                spendingsStatistic = _dbContext.Spending
+               .Where(b => (b.date >= mindate && b.date <= maxdate &&
+                b.price >= minprice && b.price <= maxprice && subusers.Contains(b.subUser.subUserId)))
+               .GroupBy(groupByFunction)
+               .Select(group => new StatisticsModel(group.Key.ToString(), group.Sum(p => p.price), group.Count()))
+               .ToArray();
+            }
+
+            return spendingsStatistic;
         }
 
     }

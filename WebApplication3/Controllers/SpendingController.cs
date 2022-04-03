@@ -77,6 +77,7 @@ namespace WebApplication3.Controllers
 
         }
 
+
         [Authorize(Policy = "subusers")]
         [HttpPost("update")]
         public IActionResult UpdateSpending([FromForm] String product, [FromForm] String productCategory, [FromForm] int price,
@@ -134,9 +135,10 @@ namespace WebApplication3.Controllers
         public IActionResult GetSubUserSpendingByQuery([FromForm] String subuserid, [FromForm] String mindate, [FromForm] String maxdate,
             [FromForm] int minprice, [FromForm] int maxprice, [FromForm] List<String> categories, [FromForm] int page,[FromForm] String orderby)
         {
-            DateTime mindateTime = DateTime.Parse(mindate);
-            DateTime maxdateTime = DateTime.Parse(maxdate);
+            DateTime mindateTime = DateTime.Parse(mindate).AddHours(6);
+            DateTime maxdateTime = DateTime.Parse(maxdate).AddHours(6);
             var subUsersString = User.FindFirst("subusers")?.Value;
+            var email = User.FindFirst("email")?.Value;
             String[]? subusers = JsonSerializer.Deserialize<String[]>(subUsersString);
             if (!subusers.Contains(subuserid))
             {
@@ -145,6 +147,33 @@ namespace WebApplication3.Controllers
 
             return StatusCode(200, JsonSerializer.Serialize(_spendingService.GetAllSpendingByQuery(subuserid,mindateTime,maxdateTime,minprice,
                 maxprice,categories,page,orderby)));
+
+        }
+
+        [Authorize(Policy = "subusers")]
+        [HttpPost("get-spendingstatistic-query")]
+        public IActionResult GetSubUserSpendingStatisticByQuery([FromForm] String mindate, [FromForm] String maxdate,
+           [FromForm] int minprice, [FromForm] int maxprice, [FromForm] List<String> categories, [FromForm] List<String> subusersFilter, [FromForm] String groupby)
+        {
+            DateTime mindateTime = DateTime.Parse(mindate).AddHours(6);
+            DateTime maxdateTime = DateTime.Parse(maxdate).AddHours(6);
+            var subUsersString = User.FindFirst("subusers")?.Value;
+            List<String>? subusers = JsonSerializer.Deserialize<List<String>>(subUsersString);
+            if (subusersFilter.Count > 0)
+            {
+                List<String> realsubusers = new List<String>();
+                foreach (var subuser in subusersFilter)
+                {
+                    if (subusers.Contains(subuser))
+                    {
+                        realsubusers.Add(subuser);
+                    }
+                }
+                subusers = realsubusers;
+            }
+            
+            return StatusCode(200, Newtonsoft.Json.JsonConvert.SerializeObject(_spendingService.GetAllSpendingStatisticsByQuery(subusers, mindateTime, maxdateTime, minprice,
+                maxprice, categories, groupby)));
 
         }
 

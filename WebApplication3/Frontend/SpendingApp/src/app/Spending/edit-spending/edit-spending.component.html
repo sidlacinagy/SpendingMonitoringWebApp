@@ -1,6 +1,6 @@
 <div id="body" class="d-flex flex-column align-items-center">
     <div style="width:85%">
-        <app-spending-query (newQueryEvent)="submitNewQuery($event)"></app-spending-query>
+        <app-spending-query (newQueryEvent)="submitNewQuery($event)" [isSubUserQuery]="false"></app-spending-query>
     </div>
     <div class="row text-center mt-5" style="width:95%">
         <div class="col-3">

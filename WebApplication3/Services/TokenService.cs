@@ -110,8 +110,7 @@ namespace WebApplication3.Services
                 return false;
             }
             if (tokenModel.JWTToken == JWTToken && 
-                tokenModel.RefreshTokenExpiryTime > DateTime.Now
-                && tokenModel.IsUsed == false)
+                tokenModel.RefreshTokenExpiryTime > DateTime.Now)
             {
                 tokenModel.IsUsed = true;
                 _dbContext.SaveChanges();

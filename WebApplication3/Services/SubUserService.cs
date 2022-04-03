@@ -39,6 +39,11 @@ namespace WebApplication3.Services
             {
                 throw new Exception("Subuser does not exist");
             }
+            foreach(var spending in subuser.Spendings)
+            {
+                _dbContext.Remove<Spending>(spending);      
+            }
+            _dbContext.SaveChanges();
             _dbContext.Remove<SubUser>(subuser);
             _dbContext.SaveChanges();
         }

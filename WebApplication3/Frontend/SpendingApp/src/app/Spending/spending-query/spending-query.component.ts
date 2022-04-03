@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { SubUserService } from 'src/app/shared/subuser.service';
 import * as _ from 'lodash';
@@ -13,7 +13,7 @@ import { HttpHandlerService } from 'src/app/shared/http-handler.service';
 export class SpendingQueryComponent implements OnInit {
 
   constructor(public subUserService: SubUserService,private httpHandlerService: HttpHandlerService ) { }
-
+  @Input() isSubUserQuery=false;
   public recommendedCategories: string[] = [];
   errormsg:string="";
   @Output() newQueryEvent = new EventEmitter<any>();
@@ -49,6 +49,18 @@ export class SpendingQueryComponent implements OnInit {
     return this.queryData.get('orderby');
   }
 
+  get groupbyData(){
+    return this.queryData.get('groupby');
+  }
+
+  get subusersData(){
+    return (this.queryData.get('subusersFilter') as FormArray);
+  }
+
+  get subusersFormControls(){
+    return (this.queryData.get('subusersFilter') as FormArray).controls;
+  }
+
   
   ngOnInit(): void {
     this.httpHandlerService.getRecommendedCategories(this.subUserService.currentSubUser.id).subscribe({
@@ -72,12 +84,18 @@ export class SpendingQueryComponent implements OnInit {
     maxprice: new FormControl('', [
       Validators.pattern("^[1-9][0-9]*$")]),
     categories:new FormArray([]),
+    subusersFilter:new FormArray([]),
     orderby:new FormControl(''),
+    groupby:new FormControl('category'),
     subuserid: new FormControl(''),
   });
 
   addNewCategoryField(){
     this.categoriesData.push(new FormControl(''));
+  }
+
+  addNewSubUserFilter(){
+    this.subusersData.push(new FormControl(''));
   }
 
   submitQuery(){
@@ -105,5 +123,9 @@ export class SpendingQueryComponent implements OnInit {
   deleteCategoryField(i:number){
       this.categoriesData.removeAt(i);
   }
+
+  deleteSubUserField(i:number){
+    this.subusersData.removeAt(i);
+}
 
 }
